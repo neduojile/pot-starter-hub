@@ -282,3 +282,24 @@
     font-size: 19px;
   }
 }
+
+/* Show the claim button only after successful eligibility verification */
+.mobileClaimFallback {
+  display: block !important;
+  width: 100%;
+  min-height: 54px;
+  margin-top: 16px;
+  padding: 14px 20px;
+  border: 1px solid #b5f36d;
+  border-radius: 12px;
+  background: #b5f36d;
+  color: #10150c;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.mobileClaimFallback:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
