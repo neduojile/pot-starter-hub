@@ -3629,3 +3629,26 @@
     animation: none !important;
   }
 }
+
+/* Mobile navigation visibility */
+@media (max-width: 850px) {
+  .mobileNav {
+    transition: opacity 240ms ease, transform 240ms ease, visibility 240ms ease;
+    will-change: opacity, transform;
+  }
+  .mobileNavVisible {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .mobileNavHidden {
+    opacity: 0;
+    transform: translateY(16px);
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobileNav { transition: none; }
+}

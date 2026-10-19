@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
@@ -118,6 +118,28 @@ function TypingEyebrow({
 export default function Home() {
   const [active, setActive] = useState<Section>("home");
   const [networkOnline, setNetworkOnline] = useState<boolean | null>(null);
+  const [navVisible, setNavVisible] = useState(true);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const reveal = () => {
+      setNavVisible(true);
+      clearTimeout(timer);
+      timer = setTimeout(() => setNavVisible(false), 1800);
+    };
+    window.addEventListener("scroll", reveal, { passive: true });
+    window.addEventListener("touchstart", reveal, { passive: true });
+    window.addEventListener("pointerdown", reveal, { passive: true });
+    window.addEventListener("keydown", reveal);
+    reveal();
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", reveal);
+      window.removeEventListener("touchstart", reveal);
+      window.removeEventListener("pointerdown", reveal);
+      window.removeEventListener("keydown", reveal);
+    };
+  }, []);
   useEffect(() => {
     let mounted = true;
     const checkStatus = async () => {
@@ -289,11 +311,11 @@ export default function Home() {
 
           {active === "guide" && (
             <section className={styles.guideSection}>
-              <div className={styles.guideIntro}><span className={styles.mutedLabel}>THREE SIMPLE STEPS</span><h2>From setup to your first transaction.</h2><p>Get everything ready before the testnet faucet comes back online.</p></div>
+              <div className={styles.guideIntro}><span className={styles.mutedLabel}>YOUR QUICK-START CHECKLIST</span><h2>From setup to your first transaction.</h2><p>Follow these steps in order. Network access and faucet availability are separate, so check both before claiming.</p></div>
               <div className={styles.guideGrid}>
-                <article className={styles.guideCard}><span className={styles.stepNumber}>01</span><div className={styles.guideIcon}><Icon name="wallet" size={23} /></div><h3>Prepare your wallet</h3><p>Set up a compatible wallet and keep your recovery phrase private. Never share it with a faucet.</p><span className={styles.stepStatus}>Start here</span></article>
-                <article className={styles.guideCard}><span className={styles.stepNumber}>02</span><div className={styles.guideIcon}><Icon name="droplet" size={23} /></div><h3>Get test tokens</h3><p>When Portaldot V3 is available, connect your wallet and request test tokens from the faucet.</p><span className={styles.stepStatus}><i /> Waiting for network</span></article>
-                <article className={styles.guideCard}><span className={styles.stepNumber}>03</span><div className={styles.guideIcon}><Icon name="arrow" size={23} /></div><h3>Make a transaction</h3><p>Use your test tokens to explore transactions and learn how the network works.</p><span className={styles.stepStatus}>After claiming</span></article>
+                <article className={styles.guideCard}><span className={styles.stepNumber}>01</span><div className={styles.guideIcon}><Icon name="wallet" size={23} /></div><h3>Prepare your wallet</h3><p>Use a wallet that supports Portaldot V3. Copy your native address beginning with 5. Never share your recovery phrase or enter it on this site.</p><span className={styles.stepStatus}>Start here</span></article>
+                <article className={styles.guideCard}><span className={styles.stepNumber}>02</span><div className={styles.guideIcon}><Icon name="droplet" size={23} /></div><h3>Check eligibility and claim</h3><p>Enter your native Portaldot V3 address and verify eligibility. When claims are enabled and you qualify, request 10 tPOTv3. The cooldown is 24 hours.</p><span className={styles.stepStatus}><i /> Check faucet status</span></article>
+                <article className={styles.guideCard}><span className={styles.stepNumber}>03</span><div className={styles.guideIcon}><Icon name="arrow" size={23} /></div><h3>Make a transaction</h3><p>After receiving your tokens, check your balance and use a compatible wallet or developer tool to explore testnet transactions. Test tokens have no mainnet value.</p><span className={styles.stepStatus}>After claiming</span></article>
               </div>
               <div className={styles.guideCallout}><Icon name="book" size={20} /><div><strong>Learn from the official guide</strong><p>Use Portaldot's official testnet documentation for the latest network setup instructions.</p><a href="https://github.com/ItsCogumellum/portaldot-v3-testnet-guide" target="_blank" rel="noreferrer">Open documentation <Icon name="external" size={14} /></a></div></div>
             </section>
@@ -303,7 +325,7 @@ export default function Home() {
         </div>
       </section>
 
-      <nav className={styles.mobileNav} aria-label="Mobile navigation">
+      <nav className={`${styles.mobileNav} ${navVisible ? styles.mobileNavVisible : styles.mobileNavHidden}`} aria-label="Mobile navigation">
         {navigation.map((item) => (
           <button
             key={item.id}

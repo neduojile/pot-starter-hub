@@ -52,3 +52,19 @@ a:focus-visible {
   color: #10150b;
   background: #b5f36d;
 }
+
+/* Dark mobile overscroll and safe-area handling */
+html {
+  background: #090b0e;
+  overscroll-behavior-y: none;
+}
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #090b0e;
+  overscroll-behavior-x: none;
+}
+.appShell {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
