@@ -7,3 +7,6 @@ allowBuilds:
   prisma: true
   esbuild: false
   workerd: false
+
+overrides:
+  '@polkadot-api/json-rpc-provider': 0.2.0
