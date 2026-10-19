@@ -1,3 +1,4 @@
+﻿import { resolve } from "node:path";
 import {
   BadRequestException,
   ConflictException,
@@ -217,7 +218,7 @@ export class FaucetService {
     try {
       const adapterPath =
         process.env.POT_TRANSFER_ADAPTER_PATH ??
-        "C:\\Users\\HELLOW\\pot-transfer-adapter\\transfer.cjs";
+        resolve(process.cwd(), "apps/api/adapter/transfer.cjs");
 
       const raw = await new Promise<string>((resolve, reject) => {
         const child = spawn(process.execPath, [adapterPath], {
@@ -327,5 +328,7 @@ export class FaucetService {
     };
   }
 }
+
+
 
 
