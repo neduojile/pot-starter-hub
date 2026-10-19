@@ -1,4 +1,4 @@
-﻿import { resolve } from "node:path";
+import { resolve } from "node:path";
 import {
   BadRequestException,
   ConflictException,
@@ -89,8 +89,18 @@ export class FaucetService {
         "Faucet configuration has not been initialized.",
       );
     }
-    if (config.paused || process.env.FAUCET_CLAIMS_ENABLED !== "true") {
-      return { eligible: false, reason: "The faucet is paused." };
+    if (process.env.FAUCET_CLAIMS_ENABLED !== "true") {
+      return {
+        eligible: false,
+        reason: "Faucet claims are temporarily disabled.",
+      };
+    }
+
+    if (config.paused) {
+      return {
+        eligible: false,
+        reason: "The faucet is paused.",
+      };
     }
 
     const now = new Date();
