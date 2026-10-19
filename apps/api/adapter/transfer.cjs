@@ -82,7 +82,7 @@ async function main() {
 
     let unsubscribe;
     let settled = false;
-    let finalizedResult;
+    let hashReported = false;
 
     const result = await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
@@ -93,6 +93,25 @@ async function main() {
       }, 120000);
 
       transfer.signAndSend(pair, { nonce: -1 }, (status) => {
+        const observedHash = status.txHash?.toHex();
+
+        if (
+          !hashReported &&
+          observedHash &&
+          (status.status.isInBlock || status.status.isFinalized)
+        ) {
+          hashReported = true;
+          const includedBlockHash = status.status.isFinalized
+            ? status.status.asFinalized.toHex()
+            : status.status.asInBlock.toHex();
+
+          output({
+            event: "included",
+            txHash: observedHash,
+            blockHash: includedBlockHash
+          });
+        }
+
         if (!status.status.isFinalized || settled) return;
 
         settled = true;
@@ -174,7 +193,6 @@ async function main() {
       });
     });
 
-    finalizedResult = result;
     if (unsubscribe) unsubscribe();
     output(result);
   } finally {

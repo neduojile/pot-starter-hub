@@ -238,8 +238,10 @@ export class FaucetService {
         });
 
         let stdout = "";
+        let stdoutBuffer = "";
         let stderr = "";
         let settled = false;
+        let txHashPersist = Promise.resolve();
 
         const timer = setTimeout(() => {
           if (settled) return;
@@ -250,7 +252,36 @@ export class FaucetService {
 
         child.stdout.setEncoding("utf8");
         child.stderr.setEncoding("utf8");
-        child.stdout.on("data", (chunk) => { stdout += chunk; });
+        child.stdout.on("data", (chunk) => {
+          stdout += chunk;
+          stdoutBuffer += chunk;
+          const lines = stdoutBuffer.split(/\r?\n/);
+          stdoutBuffer = lines.pop() ?? "";
+
+          for (const line of lines) {
+            if (!line.trim()) continue;
+            try {
+              const message = JSON.parse(line);
+              if (message.event === "included" && message.txHash) {
+                txHashPersist = txHashPersist.then(async () => {
+                  await this.database.client.faucetClaim.update({
+                    where: { id: reservation.claim.id },
+                    data: {
+                      txHash: message.txHash,
+                      ...(message.blockHash
+                        ? { blockHash: message.blockHash }
+                        : {}),
+                    },
+                  });
+                }).catch((error) => {
+                  console.error("[FAUCET TRANSACTION LOCATION SAVE ERROR]", error);
+                });
+              }
+            } catch {
+              // Ignore non-JSON adapter output; final result is parsed on close.
+            }
+          }
+        });
         child.stderr.on("data", (chunk) => { stderr += chunk; });
 
         child.on("error", (error) => {
@@ -260,10 +291,11 @@ export class FaucetService {
           reject(error);
         });
 
-        child.on("close", () => {
+        child.on("close", async () => {
           if (settled) return;
           settled = true;
           clearTimeout(timer);
+          await txHashPersist;
 
           const lines = stdout.trim().split(/\r?\n/).filter(Boolean);
           const jsonLine = [...lines].reverse().find((line) => {

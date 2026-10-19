@@ -280,6 +280,7 @@ model FaucetClaim {
   amount        BigInt
   status        ClaimStatus @default(PENDING)
   txHash        String?     @unique
+  blockHash     String?
   failureReason String?
   createdAt     DateTime    @default(now())
   confirmedAt   DateTime?

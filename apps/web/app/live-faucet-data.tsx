@@ -5,6 +5,7 @@ import styles from "./live-faucet-data.module.css";
 
 type Claim = {
   id: string;
+  walletAddress: string;
   amount: string;
   status: string;
   createdAt: string;
@@ -15,9 +16,10 @@ type HistoryResponse = Claim[] | { value?: Claim[] };
 
 type Props = {
   onViewAll?: () => void;
+  showAll?: boolean;
 };
 
-export default function LiveFaucetData({ onViewAll }: Props) {
+export default function LiveFaucetData({ onViewAll, showAll = false }: Props) {
   const [claims, setClaims] = useState<Claim[]>([]);
   const [historyState, setHistoryState] = useState("loading");
 
@@ -29,7 +31,9 @@ export default function LiveFaucetData({ onViewAll }: Props) {
       if (loading) return;
       loading = true;
       try {
-        const response = await fetch("/api/faucet/history?limit=5", {
+        const response = await fetch(
+          `/api/faucet/history?limit=${showAll ? 100 : 4}`,
+          {
           cache: "no-store",
         });
         if (!response.ok) throw new Error("History unavailable");
@@ -52,7 +56,13 @@ export default function LiveFaucetData({ onViewAll }: Props) {
       active = false;
       clearInterval(timer);
     };
-  }, []);
+  }, [showAll]);
+
+  function formatAddress(address: string) {
+    if (!address) return "Unknown wallet";
+    if (address.length <= 9) return address;
+    return `${address.slice(0, 4)}...${address.slice(-3)}`;
+  }
 
   function formatAmount(amount: string) {
     try {
@@ -74,9 +84,11 @@ export default function LiveFaucetData({ onViewAll }: Props) {
       <div className={styles.heading}>
         <div>
           <span className={styles.eyebrow}>TRANSPARENCY BY DEFAULT</span>
-          <h2>Recent activity</h2>
+          <h2>{showAll ? "All activity" : "Recent activity"}</h2>
           <p className={styles.subtitle}>
-            A live view of the latest faucet claim records.
+            {showAll
+              ? "Browse recent faucet claim records and their status."
+              : "A live view of the latest faucet claim records."}
           </p>
         </div>
         <button
@@ -90,7 +102,7 @@ export default function LiveFaucetData({ onViewAll }: Props) {
       </div>
 
       <div className={styles.historyHeading}>
-        <span>Latest claims</span>
+        <span>{showAll ? "Transaction history" : "Latest claims"}</span>
         <span className={styles.recordCount}>
           {historyState === "loading"
             ? "Loading"
@@ -112,13 +124,13 @@ export default function LiveFaucetData({ onViewAll }: Props) {
         </p>
       ) : (
         <div className={styles.claims}>
-          {claims.map((claim) => (
+          {(showAll ? claims : claims.slice(0, 4)).map((claim) => (
             <article className={styles.claim} key={claim.id}>
               <div className={styles.claimIcon} aria-hidden="true">↗</div>
               <div className={styles.claimInfo}>
-                <strong>{formatAmount(claim.amount)}</strong>
-                <span>
-                  {new Date(claim.createdAt).toLocaleString()}
+                <strong>{formatAddress(claim.walletAddress)}</strong>
+                <span title={claim.walletAddress}>
+                  {formatAmount(claim.amount)} ? {new Date(claim.createdAt).toLocaleString()}
                 </span>
               </div>
               <span

@@ -303,3 +303,46 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+/* Mobile readability and breathing room */
+.checker { gap: 11px; margin-top: 16px; }
+.checker label { font-size: 13px; }
+.checker input { min-height: 48px; padding: 12px; font-size: 13px; }
+.help { margin: 0 0 4px; font-size: 12px; line-height: 1.6; }
+.actions { gap: 10px; }
+.actions button { min-height: 46px; padding: 11px; font-size: 12px; }
+
+/* Compact, polished wallet controls */
+.checker {
+  gap: 9px;
+}
+
+.checker input {
+  min-height: 42px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.actions {
+  gap: 8px;
+}
+
+.actions button {
+  min-height: 38px;
+  padding: 9px 12px;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 520px) {
+  .checker input {
+    min-height: 40px;
+  }
+
+  .actions button {
+    min-height: 38px;
+    font-size: 12px;
+  }
+}

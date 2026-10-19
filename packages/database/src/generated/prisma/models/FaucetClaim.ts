@@ -40,6 +40,7 @@ export type FaucetClaimMinAggregateOutputType = {
   amount: bigint | null
   status: $Enums.ClaimStatus | null
   txHash: string | null
+  blockHash: string | null
   failureReason: string | null
   createdAt: Date | null
   confirmedAt: Date | null
@@ -51,6 +52,7 @@ export type FaucetClaimMaxAggregateOutputType = {
   amount: bigint | null
   status: $Enums.ClaimStatus | null
   txHash: string | null
+  blockHash: string | null
   failureReason: string | null
   createdAt: Date | null
   confirmedAt: Date | null
@@ -62,6 +64,7 @@ export type FaucetClaimCountAggregateOutputType = {
   amount: number
   status: number
   txHash: number
+  blockHash: number
   failureReason: number
   createdAt: number
   confirmedAt: number
@@ -83,6 +86,7 @@ export type FaucetClaimMinAggregateInputType = {
   amount?: true
   status?: true
   txHash?: true
+  blockHash?: true
   failureReason?: true
   createdAt?: true
   confirmedAt?: true
@@ -94,6 +98,7 @@ export type FaucetClaimMaxAggregateInputType = {
   amount?: true
   status?: true
   txHash?: true
+  blockHash?: true
   failureReason?: true
   createdAt?: true
   confirmedAt?: true
@@ -105,6 +110,7 @@ export type FaucetClaimCountAggregateInputType = {
   amount?: true
   status?: true
   txHash?: true
+  blockHash?: true
   failureReason?: true
   createdAt?: true
   confirmedAt?: true
@@ -203,6 +209,7 @@ export type FaucetClaimGroupByOutputType = {
   amount: bigint
   status: $Enums.ClaimStatus
   txHash: string | null
+  blockHash: string | null
   failureReason: string | null
   createdAt: Date
   confirmedAt: Date | null
@@ -237,6 +244,7 @@ export type FaucetClaimWhereInput = {
   amount?: Prisma.BigIntFilter<"FaucetClaim"> | bigint | number
   status?: Prisma.EnumClaimStatusFilter<"FaucetClaim"> | $Enums.ClaimStatus
   txHash?: Prisma.StringNullableFilter<"FaucetClaim"> | string | null
+  blockHash?: Prisma.StringNullableFilter<"FaucetClaim"> | string | null
   failureReason?: Prisma.StringNullableFilter<"FaucetClaim"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FaucetClaim"> | Date | string
   confirmedAt?: Prisma.DateTimeNullableFilter<"FaucetClaim"> | Date | string | null
@@ -248,6 +256,7 @@ export type FaucetClaimOrderByWithRelationInput = {
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   txHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  blockHash?: Prisma.SortOrderInput | Prisma.SortOrder
   failureReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -262,6 +271,7 @@ export type FaucetClaimWhereUniqueInput = Prisma.AtLeast<{
   walletAddress?: Prisma.StringFilter<"FaucetClaim"> | string
   amount?: Prisma.BigIntFilter<"FaucetClaim"> | bigint | number
   status?: Prisma.EnumClaimStatusFilter<"FaucetClaim"> | $Enums.ClaimStatus
+  blockHash?: Prisma.StringNullableFilter<"FaucetClaim"> | string | null
   failureReason?: Prisma.StringNullableFilter<"FaucetClaim"> | string | null
   createdAt?: Prisma.DateTimeFilter<"FaucetClaim"> | Date | string
   confirmedAt?: Prisma.DateTimeNullableFilter<"FaucetClaim"> | Date | string | null
@@ -273,6 +283,7 @@ export type FaucetClaimOrderByWithAggregationInput = {
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   txHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  blockHash?: Prisma.SortOrderInput | Prisma.SortOrder
   failureReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -292,6 +303,7 @@ export type FaucetClaimScalarWhereWithAggregatesInput = {
   amount?: Prisma.BigIntWithAggregatesFilter<"FaucetClaim"> | bigint | number
   status?: Prisma.EnumClaimStatusWithAggregatesFilter<"FaucetClaim"> | $Enums.ClaimStatus
   txHash?: Prisma.StringNullableWithAggregatesFilter<"FaucetClaim"> | string | null
+  blockHash?: Prisma.StringNullableWithAggregatesFilter<"FaucetClaim"> | string | null
   failureReason?: Prisma.StringNullableWithAggregatesFilter<"FaucetClaim"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FaucetClaim"> | Date | string
   confirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FaucetClaim"> | Date | string | null
@@ -303,6 +315,7 @@ export type FaucetClaimCreateInput = {
   amount: bigint | number
   status?: $Enums.ClaimStatus
   txHash?: string | null
+  blockHash?: string | null
   failureReason?: string | null
   createdAt?: Date | string
   confirmedAt?: Date | string | null
@@ -314,6 +327,7 @@ export type FaucetClaimUncheckedCreateInput = {
   amount: bigint | number
   status?: $Enums.ClaimStatus
   txHash?: string | null
+  blockHash?: string | null
   failureReason?: string | null
   createdAt?: Date | string
   confirmedAt?: Date | string | null
@@ -325,6 +339,7 @@ export type FaucetClaimUpdateInput = {
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -336,6 +351,7 @@ export type FaucetClaimUncheckedUpdateInput = {
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -347,6 +363,7 @@ export type FaucetClaimCreateManyInput = {
   amount: bigint | number
   status?: $Enums.ClaimStatus
   txHash?: string | null
+  blockHash?: string | null
   failureReason?: string | null
   createdAt?: Date | string
   confirmedAt?: Date | string | null
@@ -358,6 +375,7 @@ export type FaucetClaimUpdateManyMutationInput = {
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -369,6 +387,7 @@ export type FaucetClaimUncheckedUpdateManyInput = {
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   status?: Prisma.EnumClaimStatusFieldUpdateOperationsInput | $Enums.ClaimStatus
   txHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   failureReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -380,6 +399,7 @@ export type FaucetClaimCountOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   txHash?: Prisma.SortOrder
+  blockHash?: Prisma.SortOrder
   failureReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   confirmedAt?: Prisma.SortOrder
@@ -395,6 +415,7 @@ export type FaucetClaimMaxOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   txHash?: Prisma.SortOrder
+  blockHash?: Prisma.SortOrder
   failureReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   confirmedAt?: Prisma.SortOrder
@@ -406,6 +427,7 @@ export type FaucetClaimMinOrderByAggregateInput = {
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
   txHash?: Prisma.SortOrder
+  blockHash?: Prisma.SortOrder
   failureReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   confirmedAt?: Prisma.SortOrder
@@ -427,6 +449,7 @@ export type FaucetClaimSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   amount?: boolean
   status?: boolean
   txHash?: boolean
+  blockHash?: boolean
   failureReason?: boolean
   createdAt?: boolean
   confirmedAt?: boolean
@@ -438,6 +461,7 @@ export type FaucetClaimSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   amount?: boolean
   status?: boolean
   txHash?: boolean
+  blockHash?: boolean
   failureReason?: boolean
   createdAt?: boolean
   confirmedAt?: boolean
@@ -449,6 +473,7 @@ export type FaucetClaimSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   amount?: boolean
   status?: boolean
   txHash?: boolean
+  blockHash?: boolean
   failureReason?: boolean
   createdAt?: boolean
   confirmedAt?: boolean
@@ -460,12 +485,13 @@ export type FaucetClaimSelectScalar = {
   amount?: boolean
   status?: boolean
   txHash?: boolean
+  blockHash?: boolean
   failureReason?: boolean
   createdAt?: boolean
   confirmedAt?: boolean
 }
 
-export type FaucetClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "walletAddress" | "amount" | "status" | "txHash" | "failureReason" | "createdAt" | "confirmedAt", ExtArgs["result"]["faucetClaim"]>
+export type FaucetClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "walletAddress" | "amount" | "status" | "txHash" | "blockHash" | "failureReason" | "createdAt" | "confirmedAt", ExtArgs["result"]["faucetClaim"]>
 
 export type $FaucetClaimPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "FaucetClaim"
@@ -476,6 +502,7 @@ export type $FaucetClaimPayload<ExtArgs extends runtime.Types.Extensions.Interna
     amount: bigint
     status: $Enums.ClaimStatus
     txHash: string | null
+    blockHash: string | null
     failureReason: string | null
     createdAt: Date
     confirmedAt: Date | null
@@ -907,6 +934,7 @@ export interface FaucetClaimFieldRefs {
   readonly amount: Prisma.FieldRef<"FaucetClaim", 'BigInt'>
   readonly status: Prisma.FieldRef<"FaucetClaim", 'ClaimStatus'>
   readonly txHash: Prisma.FieldRef<"FaucetClaim", 'String'>
+  readonly blockHash: Prisma.FieldRef<"FaucetClaim", 'String'>
   readonly failureReason: Prisma.FieldRef<"FaucetClaim", 'String'>
   readonly createdAt: Prisma.FieldRef<"FaucetClaim", 'DateTime'>
   readonly confirmedAt: Prisma.FieldRef<"FaucetClaim", 'DateTime'>

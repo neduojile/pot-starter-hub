@@ -3652,3 +3652,32 @@
 @media (prefers-reduced-motion: reduce) {
   .mobileNav { transition: none; }
 }
+
+/* Animated POT token droplet */
+.tokenOrb {
+  animation: potDropFloat 2.4s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.tokenOrb svg {
+  filter: drop-shadow(0 0 5px rgba(181, 243, 109, 0.25));
+  animation: potDropGlow 2.4s ease-in-out infinite;
+}
+
+@keyframes potDropFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-6px) scale(1.035); }
+}
+
+@keyframes potDropGlow {
+  0%, 100% { filter: drop-shadow(0 0 3px rgba(181, 243, 109, 0.15)); }
+  50% { filter: drop-shadow(0 0 10px rgba(181, 243, 109, 0.55)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tokenOrb,
+  .tokenOrb svg {
+    animation: none;
+  }
+}

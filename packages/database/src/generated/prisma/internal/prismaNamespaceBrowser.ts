@@ -254,6 +254,7 @@ export const FaucetClaimScalarFieldEnum = {
   amount: 'amount',
   status: 'status',
   txHash: 'txHash',
+  blockHash: 'blockHash',
   failureReason: 'failureReason',
   createdAt: 'createdAt',
   confirmedAt: 'confirmedAt'

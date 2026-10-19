@@ -305,7 +305,7 @@ export default function Home() {
           )}
           {(active === "home" || active === "activity") && (
             <section className={styles.activitySection}>
-              <LiveFaucetData onViewAll={() => setActive("activity")} />
+              <LiveFaucetData showAll={active === "activity"} onViewAll={() => setActive("activity")} />
             </section>
           )}
 
