@@ -228,7 +228,7 @@ export class FaucetService {
     try {
       const adapterPath =
         process.env.POT_TRANSFER_ADAPTER_PATH ??
-        resolve(process.cwd(), "apps/api/adapter/transfer.cjs");
+        resolve(process.cwd(), "adapter/transfer.cjs");
 
       const raw = await new Promise<string>((resolve, reject) => {
         const child = spawn(process.execPath, [adapterPath], {
