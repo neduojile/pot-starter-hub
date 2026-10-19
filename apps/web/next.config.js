@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  transpilePackages: ["@pot-starter-hub/blockchain"],
+};
 
 export default nextConfig;
