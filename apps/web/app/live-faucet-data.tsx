@@ -51,10 +51,15 @@ export default function LiveFaucetData({ onViewAll, showAll = false }: Props) {
     };
 
     void load();
+
+    const onClaimConfirmed = () => void load();
+    window.addEventListener("faucet:claim-confirmed", onClaimConfirmed);
+
     const timer = setInterval(() => void load(), 1000);
     return () => {
       active = false;
       clearInterval(timer);
+      window.removeEventListener("faucet:claim-confirmed", onClaimConfirmed);
     };
   }, [showAll]);
 
