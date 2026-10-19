@@ -1,0 +1,224 @@
+﻿.root {
+  position: relative;
+  z-index: 20;
+}
+
+.trigger {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 15px;
+  border: 1px solid rgba(181, 243, 109, 0.22);
+  border-radius: 12px;
+  background: #b5f36d;
+  color: #151811;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.trigger:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.trigger:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.dot,
+.connectedDot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+  background: #666d60;
+}
+
+.connectedDot {
+  background: #263d13;
+  box-shadow: 0 0 0 3px rgba(38, 61, 19, 0.12);
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: min(350px, calc(100vw - 32px));
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  background: #171a17;
+  color: #f4f5f0;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.4);
+}
+
+.popoverHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.popoverHeader strong {
+  font-size: 15px;
+}
+
+.popoverHeader p {
+  margin: 5px 0 0;
+  color: #969b91;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.close {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #f4f5f0;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.extension,
+.account,
+.selectedAccount {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 11px;
+  padding: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.025);
+  color: #f4f5f0;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.extension + .extension,
+.account + .account,
+.account + .selectedAccount,
+.selectedAccount + .account {
+  margin-top: 8px;
+}
+
+.extension:hover,
+.account:hover,
+.selectedAccount {
+  border-color: rgba(181, 243, 109, 0.4);
+  background: rgba(181, 243, 109, 0.055);
+}
+
+.extension:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.walletGlyph {
+  color: #b5f36d;
+  font-size: 21px;
+}
+
+.arrow {
+  margin-left: auto;
+  color: #b5f36d;
+}
+
+.accountList {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.account {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+}
+
+.selectedAccount {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+}
+
+.accountName {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+}
+
+.address {
+  grid-column: 1;
+  overflow-wrap: anywhere;
+  color: #969b91;
+  font-size: 10px;
+}
+
+.selectedMark {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  color: #b5f36d;
+  font-size: 10px;
+}
+
+.disconnect {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px;
+  border: 1px solid rgba(255, 150, 140, 0.2);
+  border-radius: 10px;
+  background: transparent;
+  color: #ffaaa4;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.error {
+  margin: 0 0 12px;
+  padding: 11px;
+  border: 1px solid rgba(255, 150, 140, 0.2);
+  border-radius: 10px;
+  color: #ffaaa4;
+  font-size: 12px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.footnote {
+  margin: 15px 0 0;
+  color: #858b80;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+@media (max-width: 520px) {
+  .trigger {
+    min-height: 40px;
+    padding: 0 11px;
+    font-size: 11px;
+  }
+
+  .popover {
+    position: fixed;
+    top: auto;
+    right: 16px;
+    bottom: 86px;
+    width: auto;
+    left: 16px;
+    max-height: min(70vh, 520px);
+    overflow-y: auto;
+  }
+}

@@ -1,0 +1,476 @@
+﻿.panel {
+  margin-top: 24px;
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 22px;
+  background: linear-gradient(145deg, #171a17, #111311);
+  color: #f4f5f0;
+}
+
+.heading,
+.historyHeading,
+.claim {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.heading h2 {
+  margin: 7px 0 0;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+}
+
+.eyebrow {
+  color: #b5f36d;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.readOnly {
+  padding: 7px 11px;
+  border: 1px solid rgba(181, 243, 109, 0.2);
+  border-radius: 999px;
+  color: #b5f36d;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.stat {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.stat > span,
+.claimInfo > span {
+  display: block;
+  color: #92978f;
+  font-size: 12px;
+}
+
+.stat strong {
+  display: block;
+  margin-top: 10px;
+  overflow-wrap: anywhere;
+  font-size: clamp(15px, 2vw, 21px);
+  font-weight: 600;
+}
+
+.historyHeading {
+  margin-top: 28px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.historyHeading h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.historyHeading > span {
+  color: #92978f;
+  font-size: 12px;
+}
+
+.empty {
+  margin: 0;
+  padding: 24px 8px 8px;
+  color: #92978f;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.error {
+  margin: 16px 0 0;
+  color: #ffaaa4;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.claims {
+  display: grid;
+}
+
+.claim {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.claim:last-child {
+  border-bottom: 0;
+}
+
+.claimInfo {
+  flex: 1;
+  min-width: 130px;
+}
+
+.claimInfo strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.claimInfo > span {
+  font-size: 11px;
+}
+
+.status {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(181, 243, 109, 0.08);
+  color: #b5f36d;
+  font-size: 10px;
+  text-transform: capitalize;
+}
+
+@media (max-width: 600px) {
+  .panel {
+    margin-top: 18px;
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .heading h2 {
+    font-size: 19px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin-top: 18px;
+  }
+
+  .stat {
+    padding: 14px;
+  }
+
+  .stat strong {
+    margin-top: 7px;
+    font-size: 18px;
+  }
+
+  .claim {
+    gap: 10px;
+  }
+}
+
+/* Unified recent claims panel */
+.panel {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.historyHeading {
+  margin-top: 18px;
+}
+
+.claims {
+  display: flex;
+  flex-direction: column;
+}
+
+.claim {
+  min-height: 62px;
+  padding: 13px 0;
+  box-sizing: border-box;
+  gap: 16px;
+}
+
+.claimInfo {
+  min-width: 0;
+}
+
+.claimInfo strong {
+  font-size: 14px;
+}
+
+.claimInfo span {
+  font-size: 11px;
+}
+
+.status {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (min-width: 901px) {
+  .panel {
+    padding: 22px 24px;
+    border-radius: 16px;
+  }
+
+  .stats {
+    gap: 12px;
+  }
+
+  .historyHeading {
+    margin-top: 20px;
+    padding-top: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .panel {
+    padding: 15px;
+  }
+
+  .claim {
+    min-height: 58px;
+    padding: 11px 0;
+  }
+}
+
+/* Premium recent activity panel */
+.panel {
+  width: 100%;
+  min-width: 0;
+  padding: 24px;
+  margin: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, .15);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #111519, #0d1012);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.heading h2 {
+  margin: 6px 0 0;
+  font-size: 23px;
+  line-height: 1.2;
+  letter-spacing: -.6px;
+}
+
+.subtitle {
+  margin: 7px 0 0;
+  color: #929ca8;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.viewAll {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgba(181, 243, 109, .22);
+  border-radius: 10px;
+  background: rgba(181, 243, 109, .06);
+  color: #b5f36d;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background .18s ease, border-color .18s ease;
+}
+
+.viewAll:hover:not(:disabled) {
+  background: rgba(181, 243, 109, .12);
+  border-color: rgba(181, 243, 109, .45);
+}
+
+.viewAll:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
+.historyHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  margin-bottom: 4px;
+  color: #e7ebef;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.recordCount {
+  color: #87929e;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.claims {
+  display: flex;
+  flex-direction: column;
+}
+
+.claim {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .065);
+}
+
+.claim:last-child {
+  border-bottom: 0;
+}
+
+.claimIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: 1px solid rgba(181, 243, 109, .14);
+  border-radius: 11px;
+  background: rgba(181, 243, 109, .06);
+  color: #b5f36d;
+  font-size: 17px;
+}
+
+.claimInfo {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.claimInfo strong {
+  color: #f1f4f6;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.claimInfo span {
+  color: #8994a0;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.status {
+  flex-shrink: 0;
+  padding: 6px 9px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 650;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.statusConfirmed {
+  color: #b5f36d;
+  background: rgba(181, 243, 109, .08);
+  border-color: rgba(181, 243, 109, .13);
+}
+
+.statusFailed {
+  color: #ff9d9d;
+  background: rgba(255, 100, 100, .07);
+  border-color: rgba(255, 100, 100, .14);
+}
+
+.statusPending {
+  color: #f3c66b;
+  background: rgba(243, 198, 107, .07);
+  border-color: rgba(243, 198, 107, .14);
+}
+
+.empty {
+  padding: 22px 0;
+  color: #8f99a4;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.activityFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, .07);
+  color: #7f8a96;
+  font-size: 10px;
+}
+
+@media (max-width: 600px) {
+  .panel {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .heading {
+    align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 15px;
+  }
+
+  .heading h2 {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+  }
+
+  .viewAll {
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 10px;
+  }
+
+  .claim {
+    gap: 9px;
+    padding: 12px 0;
+  }
+
+  .claimIcon {
+    width: 31px;
+    height: 31px;
+  }
+
+  .claimInfo span {
+    font-size: 10px;
+  }
+
+  .status {
+    padding: 5px 7px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 380px) {
+  .heading {
+    flex-direction: column;
+  }
+
+  .viewAll {
+    align-self: flex-start;
+  }
+}

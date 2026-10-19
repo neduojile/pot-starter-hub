@@ -1,0 +1,284 @@
+﻿.checker {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.checker label {
+  color: #e9ece5;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.checker input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 13px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.035);
+  color: #f4f5f0;
+  font: inherit;
+  font-size: 12px;
+}
+
+.checker input:focus {
+  border-color: rgba(181, 243, 109, 0.65);
+}
+
+.checker input::placeholder {
+  color: #777e73;
+}
+
+.help {
+  margin: -3px 0 2px;
+  color: #92988d;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.actions button {
+  min-height: 40px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.actions button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+.primary {
+  border: 1px solid #b5f36d;
+  background: #b5f36d;
+  color: #151811;
+}
+
+.secondary {
+  border: 1px solid rgba(181, 243, 109, 0.3);
+  background: transparent;
+  color: #d6e8c5;
+}
+
+.balance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(181, 243, 109, 0.18);
+  border-radius: 10px;
+  background: rgba(181, 243, 109, 0.05);
+}
+
+.balance span {
+  color: #a1a89a;
+  font-size: 11px;
+}
+
+.balance strong {
+  color: #d5f7b5;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.message {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.success {
+  color: #b5f36d;
+}
+
+.error {
+  color: #ffaaa4;
+}
+
+@media (max-width: 420px) {
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.countdown {
+  padding: 12px;
+  border: 1px solid rgba(181, 243, 109, 0.22);
+  border-radius: 10px;
+  background: rgba(181, 243, 109, 0.05);
+}
+
+.countdown span {
+  display: block;
+  color: #a1a89a;
+  font-size: 11px;
+}
+
+.countdown strong {
+  display: block;
+  margin-top: 5px;
+  color: #d5f7b5;
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Compact wallet results for a cleaner claim panel */
+.checker {
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.checker input {
+  padding: 11px 12px;
+}
+
+.actions {
+  gap: 8px;
+}
+
+.actions button {
+  min-height: 38px;
+  padding: 8px;
+}
+
+.balance {
+  align-items: flex-start;
+  padding: 10px;
+  gap: 8px;
+  min-width: 0;
+}
+
+.balance strong {
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.countdown {
+  padding: 10px;
+}
+
+.countdown strong {
+  font-size: 21px;
+}
+
+.message {
+  line-height: 1.5;
+}
+
+@media (max-width: 520px) {
+  .balance {
+    flex-direction: column;
+  }
+
+  .countdown strong {
+    font-size: 19px;
+  }
+}
+
+.mobileClaimFallback {
+  display: none;
+}
+
+/* Premium compact wallet controls */
+.checker {
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.checker label {
+  font-size: 12px;
+  letter-spacing: .01em;
+}
+
+.checker input {
+  min-height: 43px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
+.help {
+  margin: -2px 0 1px;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.actions {
+  gap: 8px;
+}
+
+.actions button {
+  min-height: 40px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 650;
+  transition: filter .18s ease, transform .18s ease;
+}
+
+.actions button:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.countdown {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(181, 243, 109, .17);
+  border-radius: 10px;
+  background: rgba(181, 243, 109, .045);
+}
+
+.countdown span {
+  color: #a5ad9d;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.countdown strong {
+  color: #d4f7a7;
+  font-size: 18px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.035em;
+  white-space: nowrap;
+}
+
+.balance {
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.message {
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+@media (max-width: 520px) {
+  .countdown {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .countdown strong {
+    font-size: 19px;
+  }
+}

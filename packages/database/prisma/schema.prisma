@@ -1,0 +1,289 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ApiCredential {
+  id             String           @id
+  organizationId String
+  environmentId  String
+  name           String
+  keyPrefix      String
+  secretHash     String
+  status         CredentialStatus @default(ACTIVE)
+  lastUsedAt     DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime         @default(now())
+  revokedAt      DateTime?
+  Environment    Environment      @relation(fields: [environmentId], references: [id], onDelete: Cascade)
+  Organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([environmentId, name])
+  @@index([environmentId, status])
+  @@index([keyPrefix])
+  @@index([organizationId, status])
+}
+
+model AuditEvent {
+  id             String       @id
+  organizationId String
+  actorType      ActorType
+  actorId        String?
+  action         String
+  resourceType   String
+  resourceId     String?
+  metadata       Json?
+  createdAt      DateTime     @default(now())
+  Organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([action, createdAt])
+  @@index([organizationId, createdAt])
+  @@index([resourceType, resourceId])
+}
+
+model Decision {
+  id              String          @id
+  transactionId   String
+  policyVersionId String?
+  source          DecisionSource
+  outcome         DecisionOutcome
+  ruleId          String?
+  ruleName        String?
+  reason          String?
+  latencyMs       Int?
+  protocolVersion String?
+  createdAt       DateTime        @default(now())
+  Transaction     Transaction     @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([policyVersionId])
+  @@index([source, outcome])
+  @@index([transactionId, createdAt])
+}
+
+model Environment {
+  id             String          @id
+  organizationId String
+  name           String
+  slug           String
+  type           EnvironmentType
+  description    String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime
+  ApiCredential  ApiCredential[]
+  Organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  Policy         Policy[]
+  Transaction    Transaction[]
+
+  @@unique([organizationId, slug])
+  @@index([organizationId, type])
+}
+
+model Member {
+  id             String       @id
+  organizationId String
+  email          String
+  displayName    String?
+  role           MemberRole
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime
+  Organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, email])
+  @@index([organizationId, role])
+}
+
+model Organization {
+  id            String          @id
+  name          String
+  slug          String          @unique
+  description   String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime
+  ApiCredential ApiCredential[]
+  AuditEvent    AuditEvent[]
+  Environment   Environment[]
+  Member        Member[]
+  Policy        Policy[]
+  Transaction   Transaction[]
+
+  @@index([createdAt])
+}
+
+model Policy {
+  id                                                  String          @id
+  organizationId                                      String
+  environmentId                                       String
+  name                                                String
+  slug                                                String
+  description                                         String?
+  status                                              PolicyStatus    @default(DRAFT)
+  createdAt                                           DateTime        @default(now())
+  updatedAt                                           DateTime
+  defaultAction                                       RuleAction      @default(DENY)
+  activeVersionId                                     String?         @unique
+  PolicyVersion_Policy_activeVersionIdToPolicyVersion PolicyVersion?  @relation("Policy_activeVersionIdToPolicyVersion", fields: [activeVersionId], references: [id])
+  Environment                                         Environment     @relation(fields: [environmentId], references: [id], onDelete: Cascade)
+  Organization                                        Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  PolicyVersion_PolicyVersion_policyIdToPolicy        PolicyVersion[] @relation("PolicyVersion_policyIdToPolicy")
+
+  @@unique([environmentId, slug])
+  @@index([environmentId, status])
+  @@index([organizationId, status])
+  @@index([updatedAt])
+}
+
+model PolicyVersion {
+  id                                           String    @id
+  policyId                                     String
+  version                                      Int
+  checksum                                     String
+  changelog                                    String?
+  publishedAt                                  DateTime?
+  createdAt                                    DateTime  @default(now())
+  Policy_Policy_activeVersionIdToPolicyVersion Policy?   @relation("Policy_activeVersionIdToPolicyVersion")
+  Policy_PolicyVersion_policyIdToPolicy        Policy    @relation("PolicyVersion_policyIdToPolicy", fields: [policyId], references: [id], onDelete: Cascade)
+  Rule                                         Rule[]
+
+  @@unique([policyId, version])
+  @@index([checksum])
+  @@index([policyId, createdAt])
+}
+
+model Rule {
+  id              String        @id
+  policyVersionId String
+  name            String
+  description     String?
+  priority        Int
+  action          RuleAction
+  field           String
+  operator        RuleOperator
+  value           Json
+  enabled         Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime
+  PolicyVersion   PolicyVersion @relation(fields: [policyVersionId], references: [id], onDelete: Cascade)
+
+  @@index([policyVersionId, enabled])
+  @@index([policyVersionId, priority])
+}
+
+model Transaction {
+  id              String       @id
+  organizationId  String
+  environmentId   String
+  externalId      String?
+  txHash          String?
+  fromAddress     String
+  toAddress       String?
+  value           String
+  calldata        String?
+  gasLimit        BigInt?
+  accessType      String
+  protocolVersion String?
+  createdAt       DateTime     @default(now())
+  Decision        Decision[]
+  Environment     Environment  @relation(fields: [environmentId], references: [id], onDelete: Cascade)
+  Organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
+  @@index([environmentId, createdAt])
+  @@index([fromAddress])
+  @@index([organizationId, createdAt])
+  @@index([toAddress])
+  @@index([txHash])
+}
+
+enum ActorType {
+  USER
+  API_KEY
+  SYSTEM
+}
+
+enum CredentialStatus {
+  ACTIVE
+  REVOKED
+}
+
+enum DecisionOutcome {
+  ALLOW
+  DENY
+  ERROR
+}
+
+enum DecisionSource {
+  ADMIT
+  JUDGE
+}
+
+enum EnvironmentType {
+  DEVELOPMENT
+  STAGING
+  PRODUCTION
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  OPERATOR
+  VIEWER
+}
+
+enum PolicyStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum RuleAction {
+  ALLOW
+  DENY
+}
+
+enum RuleOperator {
+  EQ
+  NEQ
+  GT
+  GTE
+  LT
+  LTE
+  IN
+  NOT_IN
+  EXISTS
+  NOT_EXISTS
+  MATCHES
+}
+
+enum ClaimStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+model FaucetConfig {
+  id              String   @id @default("default")
+  claimAmount     BigInt   @default(1000000000000000)
+  cooldownSeconds Int      @default(86400)
+  dailyLimit      Int      @default(100)
+  paused          Boolean  @default(false)
+  updatedAt       DateTime @updatedAt
+}
+
+model FaucetClaim {
+  id            String      @id @default(cuid())
+  walletAddress String
+  amount        BigInt
+  status        ClaimStatus @default(PENDING)
+  txHash        String?     @unique
+  failureReason String?
+  createdAt     DateTime    @default(now())
+  confirmedAt   DateTime?
+
+  @@index([walletAddress, createdAt])
+  @@index([status, createdAt])
+}

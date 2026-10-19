@@ -1,0 +1,34 @@
+{
+  "name": "@pot-starter-hub/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.1.2",
+    "@nestjs/config": "^12.0.1",
+    "@nestjs/core": "^12.1.2",
+    "@nestjs/platform-express": "^12.1.2",
+    "@nestjs/throttler": "^6.7.1",
+    "@polkadot-api/raw-tx-creator": "0.5.0",
+    "@polkadot/keyring": "^14.0.3",
+    "@polkadot/util-crypto": "^14.0.3",
+    "@pot-starter-hub/blockchain": "workspace:*",
+    "@pot-starter-hub/database": "workspace:*",
+    "dotenv": "^18.0.6",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^12.0.8",
+    "@nestjs/schematics": "^12.0.6",
+    "@nestjs/testing": "^12.1.2",
+    "@types/node": "26.4.1",
+    "typescript": "^6.0.3"
+  }
+}
