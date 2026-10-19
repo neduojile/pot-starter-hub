@@ -111,10 +111,11 @@ export class FaucetService {
       this.database.client.faucetClaim.findFirst({
         where: {
           walletAddress: address,
-          status: { in: ["PENDING", "CONFIRMED"] },
+          status: "CONFIRMED",
+          confirmedAt: { not: null },
         },
         orderBy: { createdAt: "desc" },
-        select: { createdAt: true },
+        select: { createdAt: true, confirmedAt: true, status: true },
       }),
       this.database.client.faucetClaim.count({
         where: {
@@ -131,9 +132,9 @@ export class FaucetService {
       };
     }
 
-    if (latestClaim) {
+    if (latestClaim?.status === "CONFIRMED" && latestClaim.confirmedAt) {
       const nextClaimAt = new Date(
-        latestClaim.createdAt.getTime() + config.cooldownSeconds * 1000,
+        latestClaim.confirmedAt.getTime() + config.cooldownSeconds * 1000,
       );
       if (nextClaimAt > now) {
         return {

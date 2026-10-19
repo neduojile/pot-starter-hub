@@ -22,27 +22,36 @@ export default function LiveFaucetData({ onViewAll }: Props) {
   const [historyState, setHistoryState] = useState("loading");
 
   useEffect(() => {
-    const controller = new AbortController();
+    let active = true;
+    let loading = false;
 
-    fetch("/api/faucet/history?limit=5", {
-      cache: "no-store",
-      signal: controller.signal,
-    })
-      .then(async (response) => {
+    const load = async () => {
+      if (loading) return;
+      loading = true;
+      try {
+        const response = await fetch("/api/faucet/history?limit=5", {
+          cache: "no-store",
+        });
         if (!response.ok) throw new Error("History unavailable");
-        return response.json() as Promise<HistoryResponse>;
-      })
-      .then((data) => {
+        const data: HistoryResponse = await response.json();
         const records = Array.isArray(data) ? data : data.value;
-        setClaims(Array.isArray(records) ? records : []);
-        setHistoryState("ready");
-      })
-      .catch((error: unknown) => {
-        if (error instanceof Error && error.name === "AbortError") return;
-        setHistoryState("error");
-      });
+        if (active) {
+          setClaims(Array.isArray(records) ? records : []);
+          setHistoryState("ready");
+        }
+      } catch {
+        if (active) setHistoryState("error");
+      } finally {
+        loading = false;
+      }
+    };
 
-    return () => controller.abort();
+    void load();
+    const timer = setInterval(() => void load(), 1000);
+    return () => {
+      active = false;
+      clearInterval(timer);
+    };
   }, []);
 
   function formatAmount(amount: string) {

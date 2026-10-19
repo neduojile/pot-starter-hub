@@ -188,12 +188,28 @@ export default function WalletAddressChecker() {
         return;
       }
 
-      const response = await fetch("/api/faucet/claim", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ walletAddress: value }),
-        cache: "no-store",
-      });
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
+      let response: Response;
+
+      try {
+        response = await fetch("/api/faucet/claim", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ walletAddress: value }),
+          cache: "no-store",
+          signal: controller.signal,
+        });
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") {
+          throw new Error(
+            "The claim request is taking too long. Check claim history before retrying."
+          );
+        }
+        throw error;
+      } finally {
+        clearTimeout(timeout);
+      }
 
       const data: ClaimResult = await response.json();
 
