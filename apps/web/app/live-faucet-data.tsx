@@ -40,7 +40,14 @@ export default function LiveFaucetData({ onViewAll, showAll = false }: Props) {
         const data: HistoryResponse = await response.json();
         const records = Array.isArray(data) ? data : data.value;
         if (active) {
-          setClaims(Array.isArray(records) ? records : []);
+          setClaims(
+            Array.isArray(records)
+              ? records.filter(
+                  (claim) =>
+                    claim.status.toUpperCase() === "CONFIRMED"
+                )
+              : []
+          );
           setHistoryState("ready");
         }
       } catch {
