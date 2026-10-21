@@ -202,9 +202,11 @@ export default function WalletAddressChecker() {
         });
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") {
-          throw new Error(
-            "The claim request is taking too long. Check claim history before retrying."
+          setMessage(
+            "Your claim is still processing. Check recent activity for confirmation before trying again."
           );
+          setIsError(false);
+          return;
         }
         throw error;
       } finally {
@@ -287,7 +289,12 @@ export default function WalletAddressChecker() {
           disabled={checking !== null || remaining > 0}
           className={styles.mobileClaimFallback}
         >
-          {checking === "claim" ? "Submitting claim..." : "Claim 10 tPOT"}
+          {checking === "claim" ? (
+            <span className={styles.claimButtonLoading}>
+              <span className={styles.claimSpinner} aria-hidden="true" />
+              Processing claim...
+            </span>
+          ) : "Claim 10 tPOT"}
         </button>
       )}
 
@@ -327,12 +334,38 @@ export default function WalletAddressChecker() {
         </div>
       )}
 
+      {checking === "claim" && (
+        <div className={styles.claimProgress} role="status" aria-live="polite">
+          <div className={styles.claimProgressHeading}>
+            <span className={styles.claimSpinner} aria-hidden="true" />
+            <strong>Your claim is processing</strong>
+          </div>
+          <div className={styles.claimProgressTrack}>
+            <span className={styles.claimProgressBar} />
+          </div>
+          <div className={styles.claimStageWindow}>
+            <span>Connecting to Portaldot V3...</span>
+            <span>Submitting your claim...</span>
+            <span>Waiting for blockchain confirmation...</span>
+          </div>
+          <p>Please keep this page open while we check the result.</p>
+        </div>
+      )}
+
       {message && (
         <p
-          className={`${styles.message} ${isError ? styles.error : styles.success}`}
+          className={`${styles.message} ${
+            claimResult?.status === "CONFIRMED" && claimResult.txHash
+              ? styles.claimSuccess
+              : isError
+                ? styles.error
+                : styles.success
+          }`}
           role="status"
         >
-          {message}
+          {claimResult?.status === "CONFIRMED" && claimResult.txHash
+            ? "Claim successful! 10 tPOTv3 claimed and confirmed."
+            : message}
         </p>
       )}
     </div>
