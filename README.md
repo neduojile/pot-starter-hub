@@ -1,159 +1,211 @@
-# Turborepo starter
+﻿<div align="center">
 
-This Turborepo starter is maintained by the Turborepo core team.
+# POT Starter Hub
 
-## Using this example
+### Your starting point for building on Portaldot V3
 
-Run the following command:
+A self-service testnet faucet and developer quick-start hub for receiving **10 tPOTv3**, checking wallet eligibility, and exploring Portaldot V3.
 
-```sh
-npx create-turbo@latest
+[Live Demo](https://pot-starter-hub.vercel.app) ·
+[GitHub Repository](https://github.com/neduojile/pot-starter-hub) ·
+[Portaldot Node Console](https://node-console.portaldot.dev)
+
+</div>
+
+---
+
+## Overview
+
+POT Starter Hub helps builders get started on the Portaldot V3 testnet through a simple interface for wallet eligibility checks, test-token claims, balance checks, and claim-history visibility.
+
+| Network detail | Value |
+|---|---|
+| Network | Portaldot V3 Testnet |
+| Test token | tPOTv3 |
+| Faucet allocation | 10 tPOTv3 per confirmed claim |
+| Cooldown | 24 hours per wallet |
+| Native wallet format | Address beginning with `5` |
+| EVM Chain ID | `420420777` |
+
+## Screenshots
+
+These screenshots showcase the main areas of the application.
+
+### Overview
+
+![POT Starter Hub overview](docs/screenshots/overview.png)
+
+### Getting Started
+
+![POT Starter Hub getting started guide](docs/screenshots/getting-started.png)
+
+### Claim History
+
+![POT Starter Hub claim history](docs/screenshots/claim-history.png)
+
+> Ensure the three screenshot files exist at the paths above before submitting the repository.
+
+## Core Features
+
+- **Testnet faucet:** Request 10 tPOTv3 when claims are enabled and the wallet is eligible.
+- **Native wallet eligibility:** Check a Portaldot native address before requesting tokens.
+- **Balance check:** Inspect the wallet's available testnet balance.
+- **Claim status and history:** Review recent claim records and their reported status.
+- **Cooldown enforcement:** Apply a 24-hour cooldown after a claim is confirmed.
+- **Developer quick start:** Follow a guided path from wallet preparation to the first testnet transaction.
+- **Responsive interface:** Access the hub on desktop or mobile.
+
+## Portaldot V3 Network Details
+
+| Setting | Value |
+|---|---|
+| Network | Portaldot V3 Testnet |
+| Substrate WebSocket RPC | `wss://test-node-v3.portaldot.dev` |
+| EVM RPC | `https://test-evm-rpc-v3.portaldot.dev` |
+| EVM Chain ID | `420420777` |
+| Token | `tPOTv3` |
+| Token decimals | `14` |
+| Node Console | [node-console.portaldot.dev](https://node-console.portaldot.dev) |
+
+**Important:** Use a native Portaldot address beginning with `5` for the faucet. An EVM `0x` address is not a substitute for the native address field.
+
+## How to Use
+
+1. Open the [live application](https://pot-starter-hub.vercel.app).
+2. Prepare a wallet that supports Portaldot V3 and copy its native address.
+3. Enter the address and select **Verify eligibility**.
+4. Review the eligibility and cooldown result.
+5. If eligible and claims are enabled, request **10 tPOTv3**.
+6. Check the claim status and transaction details when available.
+7. Open **Claim history** to review recent activity.
+
+Network reachability and faucet claim availability are separate conditions. A submitted request is not necessarily a finalized transaction.
+
+## Technology Stack
+
+| Component | Technology |
+|---|---|
+| Web application | Next.js, React, TypeScript |
+| API | NestJS, TypeScript |
+| Database | PostgreSQL, Prisma ORM |
+| Monorepo and builds | pnpm workspaces, Turborepo |
+| Blockchain integration | Polkadot API tooling |
+| Web deployment | Vercel |
+| API deployment | Render |
+
+## Repository Structure
+
+```text
+pot-starter-hub/
+├── apps/
+│   ├── web/                  # Next.js frontend and API proxy routes
+│   └── api/                  # NestJS faucet API and transfer adapter
+├── packages/
+│   ├── blockchain/           # Blockchain integration utilities
+│   └── database/             # Prisma schema, migrations and client
+├── package.json
+├── pnpm-workspace.yaml
+├── turbo.json
+└── README.md
 ```
 
-## What's inside?
+## Local Development
 
-This Turborepo includes the following packages/apps:
+### Requirements
 
-### Apps and Packages
+- Node.js 24 or a compatible version required by the repository
+- Corepack-enabled pnpm
+- PostgreSQL database
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `@next/eslint-plugin-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Install dependencies
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```powershell
+corepack pnpm install
 ```
 
-Without global `turbo`, use your package manager:
+### Configure environment variables
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm exec turbo build
-pnpm exec turbo build
+Configure the database connection and the environment variables required by the API using the project's environment files.
+
+Never commit `.env` files, database credentials, seed phrases, or private keys.
+
+### Build the database package and API
+
+```powershell
+corepack pnpm --filter @pot-starter-hub/database build
+corepack pnpm --filter @pot-starter-hub/api build
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### Build the web application
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
+```powershell
+corepack pnpm --filter web build
 ```
 
-Without global `turbo`:
+Use the development scripts defined in the root and workspace package manifests to run the application locally. Start PostgreSQL and configure the required environment variables before starting the API and web application.
 
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+## API Endpoints
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/health` | Health check |
+| `GET` | `/faucet/config` | Read faucet configuration |
+| `GET` | `/faucet/history` | Read recent claim history |
+| `GET` | `/faucet/eligibility/:walletAddress` | Check wallet eligibility |
+| `POST` | `/faucet/claim` | Submit a faucet claim request |
+
+**Deployed API health check:** [pot-starter-hub.onrender.com/health](https://pot-starter-hub.onrender.com/health)
+
+## Architecture
+
+```mermaid
+flowchart LR
+    U[Builder / Wallet] --> W[Next.js Web App]
+    W --> A[NestJS API]
+    A --> D[(PostgreSQL + Prisma)]
+    A --> X[Portaldot V3 RPC]
+    X --> N[Portaldot V3 Testnet]
+    A --> H[Claim Status and History]
+    H --> W
 ```
 
-### Develop
+The web application provides the user interface and communicates with the API. The API validates claim requests, checks eligibility and cooldown records, coordinates blockchain transfer execution, and stores claim status for history views.
 
-To develop all apps and packages, run the following command:
+## Current Scope and Limitations
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+- The project targets the **Portaldot V3 testnet** and test tokens only.
+- A successful request does not automatically mean a blockchain transfer has finalized.
+- Availability depends on testnet RPC access, deployment health, database connectivity, and faucet configuration.
+- Transaction details should be treated as confirmed only when the application reports confirmation.
+- Test tokens have no mainnet value.
 
-```sh
-cd my-turborepo
-turbo dev
-```
+## Security Notes
 
-Without global `turbo`, use your package manager:
+- Never enter or share a seed phrase or private key with the faucet.
+- Keep environment variables and database credentials private.
+- Use native Portaldot addresses for the native-wallet workflow.
+- Never send mainnet assets to testnet addresses.
 
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
-```
+## Project Status
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+POT Starter Hub is an actively developed testnet onboarding prototype. The live demo showcases its faucet workflow, wallet eligibility checks, developer guidance, and claim-history interface. Features that depend on live network confirmation remain subject to testnet availability.
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+## Contributing
 
-```sh
-turbo dev --filter=web
-```
+1. Fork the repository.
+2. Create a focused feature branch.
+3. Make and test your changes.
+4. Run the relevant package builds.
+5. Open a pull request describing the change and verification steps.
 
-Without global `turbo`:
+## License
 
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+No license has been specified in this repository yet. Unless a license is added, the code should not be assumed to be available for unrestricted reuse.
 
-### Remote Caching
+---
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+<div align="center">
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+Built for developers exploring **Portaldot V3**.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+</div>
