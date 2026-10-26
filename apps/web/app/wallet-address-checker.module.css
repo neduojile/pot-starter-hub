@@ -346,3 +346,192 @@
     font-size: 12px;
   }
 }
+
+
+/* Claim progress: visual feedback only; claim logic remains unchanged */
+.claimProgress {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid rgba(181, 243, 109, 0.28);
+  border-radius: 12px;
+  background: rgba(181, 243, 109, 0.055);
+  color: #d8e7cb;
+}
+
+.claimProgressHeading,
+.claimButtonLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+.claimProgressHeading {
+  justify-content: flex-start;
+  font-size: 13px;
+}
+
+.claimSpinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  border: 2px solid rgba(181, 243, 109, 0.28);
+  border-top-color: #b5f36d;
+  border-radius: 50%;
+  animation: claim-spin 0.75s linear infinite;
+}
+
+.claimProgressTrack {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(181, 243, 109, 0.14);
+}
+
+.claimProgressBar {
+  display: block;
+  width: 38%;
+  height: 100%;
+  border-radius: inherit;
+  background: #b5f36d;
+  animation: claim-progress 1.8s ease-in-out infinite;
+}
+
+.claimStageWindow {
+  position: relative;
+  height: 20px;
+  overflow: hidden;
+  color: #b5f36d;
+  font-size: 12px;
+}
+
+.claimStageWindow span {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: claim-stage 6s linear infinite;
+}
+
+.claimStageWindow span:nth-child(2) {
+  animation-delay: 2s;
+}
+
+.claimStageWindow span:nth-child(3) {
+  animation-delay: 4s;
+}
+
+.claimProgress > p {
+  margin: 0;
+  color: #9ba694;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.claimSuccess {
+  padding: 11px 13px;
+  border: 1px solid rgba(181, 243, 109, 0.4);
+  border-radius: 10px;
+  background: rgba(181, 243, 109, 0.1);
+  color: #b5f36d;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@keyframes claim-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes claim-progress {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(290%); }
+}
+
+@keyframes claim-stage {
+  0%, 5% { opacity: 0; transform: translateY(7px); }
+  12%, 28% { opacity: 1; transform: translateY(0); }
+  35%, 100% { opacity: 0; transform: translateY(-7px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .claimSpinner,
+  .claimProgressBar,
+  .claimStageWindow span {
+    animation: none;
+  }
+
+  .claimStageWindow span:first-child {
+    opacity: 1;
+  }
+}
+
+/* Mobile claim progress improvements */
+@media (max-width: 600px) {
+  .claimProgress {
+    width: 100%;
+    box-sizing: border-box;
+    gap: 12px;
+    margin-top: 14px;
+    padding: 14px 12px;
+    border-radius: 12px;
+    overflow-wrap: anywhere;
+  }
+
+  .claimProgressHeading {
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .claimSpinner {
+    width: 17px;
+    height: 17px;
+    flex-basis: 17px;
+    margin-top: 1px;
+  }
+
+  .claimProgressTrack {
+    width: 100%;
+    height: 6px;
+  }
+
+  .claimStageWindow {
+    min-height: 36px;
+    height: auto;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .claimStageWindow span {
+    white-space: normal;
+  }
+
+  .claimProgress > p {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .claimSuccess {
+    box-sizing: border-box;
+    width: 100%;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .claimSpinner,
+  .claimProgressBar,
+  .claimStageWindow span {
+    animation: none;
+  }
+
+  .claimStageWindow span:first-child {
+    opacity: 1;
+    transform: none;
+  }
+}

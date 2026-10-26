@@ -56,7 +56,8 @@ export class FaucetService {
   async getHistory(limit = 20) {
     const safeLimit = Math.min(Math.max(Math.trunc(limit) || 20, 1), 100);
     const claims = await this.database.client.faucetClaim.findMany({
-      orderBy: { createdAt: "desc" },
+      where: { status: "CONFIRMED", confirmedAt: { not: null } },
+      orderBy: { confirmedAt: "desc" },
       take: safeLimit,
       select: {
         id: true,
