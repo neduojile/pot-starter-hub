@@ -268,7 +268,10 @@ export class FaucetService {
             if (!line.trim()) continue;
             try {
               const message = JSON.parse(line);
-              if (message.event === "included" && message.txHash) {
+              if (
+                (message.event === "submitted" || message.event === "included") &&
+                message.txHash
+              ) {
                 txHashPersist = txHashPersist.then(async () => {
                   await this.database.client.faucetClaim.update({
                     where: { id: reservation.claim.id },

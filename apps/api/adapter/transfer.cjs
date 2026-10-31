@@ -83,6 +83,7 @@ async function main() {
     let unsubscribe;
     let settled = false;
     let hashReported = false;
+    let submittedHashReported = false;
 
     const result = await new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
@@ -94,6 +95,14 @@ async function main() {
 
       transfer.signAndSend(pair, { nonce: -1 }, (status) => {
         const observedHash = status.txHash?.toHex();
+
+        if (!submittedHashReported && observedHash) {
+          submittedHashReported = true;
+          output({
+            event: "submitted",
+            txHash: observedHash
+          });
+        }
 
         if (
           !hashReported &&
