@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import styles from "./wallet-address-checker.module.css";
@@ -11,11 +11,16 @@ type Eligibility = {
 
 type ClaimResult = {
   id?: string;
+  walletAddress?: string;
   status?: string;
   txHash?: string | null;
+  blockHash?: string | null;
+  confirmedAt?: string | null;
   amount?: string;
   message?: string;
 };
+
+type ClaimHistoryResponse = ClaimResult[] | { value?: ClaimResult[] };
 
 export default function WalletAddressChecker() {
   const [address, setAddress] = useState("");
@@ -189,7 +194,7 @@ export default function WalletAddressChecker() {
       }
 
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30000);
+      const timeout = setTimeout(() => controller.abort(), 180000);
       let response: Response;
 
       try {
@@ -202,8 +207,46 @@ export default function WalletAddressChecker() {
         });
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") {
+          setMessage("The request timed out. Checking confirmed claim history...");
+          setIsError(false);
+
+          for (let attempt = 0; attempt < 15; attempt++) {
+            try {
+              const historyResponse = await fetch("/api/faucet/history?limit=100", {
+                cache: "no-store",
+              });
+
+              if (historyResponse.ok) {
+                const historyData: ClaimHistoryResponse = await historyResponse.json();
+                const records = Array.isArray(historyData)
+                  ? historyData
+                  : historyData.value ?? [];
+
+                const confirmedClaim = records.find(
+                  (claim) =>
+                    claim.status?.toUpperCase() === "CONFIRMED" &&
+                    Boolean(claim.txHash) &&
+                    claim.walletAddress?.trim() === value,
+                );
+
+                if (confirmedClaim) {
+                  setClaimResult(confirmedClaim);
+                  setMessage("Claim successful! Your 10 tPOTv3 has been confirmed on Portaldot V3. You can check your wallet.");
+                  setIsError(false);
+                  setEligible(false);
+                  window.dispatchEvent(new Event("faucet:claim-confirmed"));
+                  return;
+                }
+              }
+            } catch {
+              // Retry the read-only history check. Never resubmit the claim.
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+          }
+
           setMessage(
-            "Your claim is still processing. Check recent activity for confirmation before trying again."
+            "Your claim request timed out, and confirmation is not yet visible in claim history. Do not claim again until its transaction status has been checked.",
           );
           setIsError(false);
           return;
@@ -222,11 +265,17 @@ export default function WalletAddressChecker() {
       setClaimResult(data);
 
       if (data.status === "CONFIRMED" && data.txHash) {
-        setMessage("Success! Your 10 tPOTv3 claim is confirmed on Portaldot V3.");
-        setIsError(false);
-        setEligible(false);
         window.dispatchEvent(new Event("faucet:claim-confirmed"));
-        await refreshEligibility(value);
+
+        try {
+          await refreshEligibility(value);
+        } catch {
+          // Eligibility refresh must never override a confirmed transaction.
+        }
+
+        setEligible(false);
+        setMessage("Claim successful! Your 10 tPOTv3 has been sent and confirmed on Portaldot V3. You can check your wallet.");
+        setIsError(false);
       } else {
         setMessage(
           "The claim request was submitted, but confirmation is not available yet. Check claim history before trying again.",
@@ -313,11 +362,17 @@ export default function WalletAddressChecker() {
       )}
 
       {claimResult?.txHash && (
-        <div className={styles.balance}>
-          <span>Transaction hash</span>
-          <strong style={{ overflowWrap: "anywhere" }}>
-            {claimResult.txHash}
-          </strong>
+        <div className={`${styles.balance} ${styles.transaction}`}>
+          <span className={styles.transactionLabel}>Transaction</span>
+
+          <details className={styles.hashDetails}>
+            <summary>
+              <span>View transaction hash</span>
+              <span className={styles.hashExpand}>Expand</span>
+            </summary>
+            <strong>{claimResult.txHash}</strong>
+          </details>
+
           <button
             type="button"
             className={styles.secondary}
@@ -371,5 +426,3 @@ export default function WalletAddressChecker() {
     </div>
   );
 }
-
-

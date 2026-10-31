@@ -1,10 +1,11 @@
-﻿<div align="center">
+
+<div align="center">
 
 # POT Starter Hub
 
 ### Your starting point for building on Portaldot V3
 
-A self-service testnet faucet and developer quick-start hub for receiving **10 tPOTv3**, checking wallet eligibility, and exploring Portaldot V3.
+A self-service testnet faucet and developer quick-start hub for receiving **10 tPOTv3**, checking wallet eligibility, and exploring the Portaldot V3 ecosystem.
 
 [Live Demo](https://pot-starter-hub.vercel.app) ·
 [GitHub Repository](https://github.com/neduojile/pot-starter-hub) ·
@@ -16,7 +17,11 @@ A self-service testnet faucet and developer quick-start hub for receiving **10 t
 
 ## Overview
 
-POT Starter Hub helps builders get started on the Portaldot V3 testnet through a simple interface for wallet eligibility checks, test-token claims, balance checks, and claim-history visibility.
+POT Starter Hub is a developer onboarding platform built to simplify access to the Portaldot V3 testnet.
+
+It provides a straightforward interface where developers and ecosystem participants can check wallet eligibility, request test tokens, inspect balances, and follow their faucet claim history.
+
+The goal is to reduce the friction between discovering the Portaldot ecosystem and completing a first testnet interaction.
 
 | Network detail | Value |
 |---|---|
@@ -43,17 +48,18 @@ These screenshots showcase the main areas of the application.
 
 ![POT Starter Hub claim history](docs/screenshots/claim-history.png)
 
-> Ensure the three screenshot files exist at the paths above before submitting the repository.
+> Ensure the screenshot files exist at the paths above before submitting the repository.
 
 ## Core Features
 
-- **Testnet faucet:** Request 10 tPOTv3 when claims are enabled and the wallet is eligible.
-- **Native wallet eligibility:** Check a Portaldot native address before requesting tokens.
-- **Balance check:** Inspect the wallet's available testnet balance.
-- **Claim status and history:** Review recent claim records and their reported status.
-- **Cooldown enforcement:** Apply a 24-hour cooldown after a claim is confirmed.
-- **Developer quick start:** Follow a guided path from wallet preparation to the first testnet transaction.
-- **Responsive interface:** Access the hub on desktop or mobile.
+- **Testnet Faucet:** Request 10 tPOTv3 when claims are enabled and the wallet is eligible.
+- **Native Wallet Eligibility:** Validate a Portaldot native wallet address before requesting tokens.
+- **Balance Checker:** Inspect the available testnet balance of a connected or entered wallet.
+- **Claim History:** Review recent faucet activity and reported transaction statuses.
+- **Cooldown Enforcement:** Apply a 24-hour cooldown after a confirmed claim.
+- **Developer Quick Start:** Follow a guided path from wallet preparation to the first testnet interaction.
+- **Claim Tracking:** Monitor claim status and available transaction references.
+- **Responsive Interface:** Access the platform across desktop and mobile devices.
 
 ## Portaldot V3 Network Details
 
@@ -64,45 +70,57 @@ These screenshots showcase the main areas of the application.
 | EVM RPC | `https://test-evm-rpc-v3.portaldot.dev` |
 | EVM Chain ID | `420420777` |
 | Token | `tPOTv3` |
-| Token decimals | `14` |
+| Token Decimals | `14` |
 | Node Console | [node-console.portaldot.dev](https://node-console.portaldot.dev) |
 
-**Important:** Use a native Portaldot address beginning with `5` for the faucet. An EVM `0x` address is not a substitute for the native address field.
+**Important:** The faucet uses a native Portaldot address beginning with `5`. An EVM `0x` address is not a substitute for the native wallet address.
+
+### EVM Compatibility Status
+
+The current application uses the native Portaldot V3 Substrate integration for wallet validation, balance queries, faucet claims, and transaction history.
+
+The EVM RPC URL and Chain ID listed above are provided as network reference information only.
+
+The current application does not implement EVM wallet connectivity, EVM balance queries, EVM faucet claims, or EVM transaction history.
+
+EVM integration remains a potential future development area and should not be considered an available application feature.
 
 ## How to Use
 
-1. Open the [live application](https://pot-starter-hub.vercel.app).
-2. Prepare a wallet that supports Portaldot V3 and copy its native address.
-3. Enter the address and select **Verify eligibility**.
-4. Review the eligibility and cooldown result.
-5. If eligible and claims are enabled, request **10 tPOTv3**.
-6. Check the claim status and transaction details when available.
-7. Open **Claim history** to review recent activity.
+1. Open the [POT Starter Hub live application](https://pot-starter-hub.vercel.app).
+2. Prepare a wallet that supports Portaldot V3.
+3. Copy your wallet's native address.
+4. Enter the address and select **Verify Eligibility**.
+5. Review the eligibility and cooldown result.
+6. If eligible and claims are enabled, request **10 tPOTv3**.
+7. Check the claim status and available transaction details.
+8. Visit the **Claim History** section to review recent activity.
 
-Network reachability and faucet claim availability are separate conditions. A submitted request is not necessarily a finalized transaction.
+A submitted claim request is not necessarily a finalized blockchain transaction. Always check the reported transaction status.
 
 ## Technology Stack
 
 | Component | Technology |
 |---|---|
-| Web application | Next.js, React, TypeScript |
-| API | NestJS, TypeScript |
-| Database | PostgreSQL, Prisma ORM |
-| Monorepo and builds | pnpm workspaces, Turborepo |
-| Blockchain integration | Polkadot API tooling |
-| Web deployment | Vercel |
-| API deployment | Render |
+| Frontend | Next.js, React, TypeScript |
+| Backend API | NestJS, TypeScript |
+| Database | PostgreSQL |
+| ORM | Prisma |
+| Monorepo | pnpm Workspaces, Turborepo |
+| Blockchain Integration | Polkadot API tooling |
+| Frontend Deployment | Vercel |
+| API Deployment | Render |
 
 ## Repository Structure
 
 ```text
 pot-starter-hub/
 ├── apps/
-│   ├── web/                  # Next.js frontend and API proxy routes
-│   └── api/                  # NestJS faucet API and transfer adapter
+│   ├── web/                  # Next.js frontend
+│   └── api/                  # NestJS API and transfer adapter
 ├── packages/
 │   ├── blockchain/           # Blockchain integration utilities
-│   └── database/             # Prisma schema, migrations and client
+│   └── database/             # Prisma schema and database client
 ├── package.json
 ├── pnpm-workspace.yaml
 ├── turbo.json
@@ -113,50 +131,78 @@ pot-starter-hub/
 
 ### Requirements
 
-- Node.js 24 or a compatible version required by the repository
-- Corepack-enabled pnpm
-- PostgreSQL database
+Before running the project locally, make sure you have:
 
-### Install dependencies
+- Node.js 24 or a compatible version required by the repository.
+- Corepack-enabled pnpm.
+- PostgreSQL database.
+- Git.
 
-```powershell
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/neduojile/pot-starter-hub.git
+```
+
+```bash
+cd pot-starter-hub
+```
+
+### 2. Install Dependencies
+
+```bash
 corepack pnpm install
 ```
 
-### Configure environment variables
+### 3. Configure Environment Variables
 
-Configure the database connection and the environment variables required by the API using the project's environment files.
+Configure the database connection and other required environment variables using the project's environment files.
+
+Make sure your PostgreSQL database is running and accessible.
 
 Never commit `.env` files, database credentials, seed phrases, or private keys.
 
-### Build the database package and API
+### 4. Build the Database Package
 
-```powershell
+```bash
 corepack pnpm --filter @pot-starter-hub/database build
+```
+
+### 5. Build the API
+
+```bash
 corepack pnpm --filter @pot-starter-hub/api build
 ```
 
-### Build the web application
+### 6. Build the Web Application
 
-```powershell
+```bash
 corepack pnpm --filter web build
 ```
 
-Use the development scripts defined in the root and workspace package manifests to run the application locally. Start PostgreSQL and configure the required environment variables before starting the API and web application.
+Use the development scripts defined in the root and workspace package manifests to run the application locally.
+
+Start PostgreSQL and configure the required environment variables before starting the API and web application.
 
 ## API Endpoints
 
+The backend exposes the following primary endpoints:
+
 | Method | Endpoint | Purpose |
 |---|---|---|
-| `GET` | `/health` | Health check |
-| `GET` | `/faucet/config` | Read faucet configuration |
-| `GET` | `/faucet/history` | Read recent claim history |
+| `GET` | `/health` | Check API health |
+| `GET` | `/faucet/config` | Retrieve faucet configuration |
+| `GET` | `/faucet/history` | Retrieve recent claim history |
 | `GET` | `/faucet/eligibility/:walletAddress` | Check wallet eligibility |
 | `POST` | `/faucet/claim` | Submit a faucet claim request |
 
-**Deployed API health check:** [pot-starter-hub.onrender.com/health](https://pot-starter-hub.onrender.com/health)
+### Deployed API Health Check
 
-## Architecture
+[https://pot-starter-hub.onrender.com/health](https://pot-starter-hub.onrender.com/health)
+
+## System Architecture
+
+POT Starter Hub uses a frontend, backend API, database, and blockchain integration to manage the faucet workflow.
 
 ```mermaid
 flowchart LR
@@ -169,38 +215,153 @@ flowchart LR
     H --> W
 ```
 
-The web application provides the user interface and communicates with the API. The API validates claim requests, checks eligibility and cooldown records, coordinates blockchain transfer execution, and stores claim status for history views.
+### How the System Works
+
+1. A user opens the web application and provides a native wallet address.
+2. The frontend communicates with the backend API.
+3. The API validates the wallet and checks eligibility.
+4. The API checks the claim cooldown and faucet configuration.
+5. Eligible requests are processed through the blockchain integration.
+6. Claim information is stored in the database.
+7. The frontend displays the available claim status and history.
+
+This architecture separates the user interface, application logic, persistent data, and blockchain operations.
 
 ## Current Scope and Limitations
 
-- The project targets the **Portaldot V3 testnet** and test tokens only.
-- A successful request does not automatically mean a blockchain transfer has finalized.
-- Availability depends on testnet RPC access, deployment health, database connectivity, and faucet configuration.
-- Transaction details should be treated as confirmed only when the application reports confirmation.
-- Test tokens have no mainnet value.
+POT Starter Hub is designed specifically for Portaldot V3 testnet onboarding.
+
+Current scope and limitations include:
+
+- The platform distributes test tokens only.
+- The native Substrate wallet workflow is the implemented blockchain integration.
+- The EVM RPC and Chain ID are reference information, not implemented EVM functionality.
+- Claim availability depends on faucet configuration and infrastructure health.
+- A successful API response does not automatically mean a blockchain transfer has finalized.
+- Transaction details should only be treated as confirmed when the application reports confirmation.
+- Test tokens have no mainnet or financial value.
+
+## Ecosystem Adoption and Sustainability
+
+### Who POT Starter Hub Serves
+
+POT Starter Hub is designed to support different participants within the Portaldot ecosystem.
+
+**Developers and Builders**
+
+Developers exploring Portaldot V3 can use the platform to obtain test tokens and experiment with testnet applications.
+
+**New Ecosystem Participants**
+
+New users can use the hub to understand native wallet requirements and complete basic testnet interactions.
+
+**Hackathon Teams and Educators**
+
+Hackathon participants, student developers, and educators can use the platform as a starting point for demonstrations, tutorials, and development exercises.
+
+**Community Contributors**
+
+Community members can explore the network and experiment with its capabilities without using mainnet assets.
+
+### Ecosystem Adoption Strategy
+
+The platform aims to reduce the distance between discovering Portaldot V3 and completing a first testnet interaction.
+
+The intended onboarding journey is:
+
+1. Discover the Portaldot V3 ecosystem through community resources and developer events.
+2. Prepare a compatible native wallet.
+3. Check wallet eligibility and request test tokens.
+4. Verify the wallet balance and transaction status.
+5. Follow developer guidance to perform a first testnet interaction.
+6. Return to the hub when additional testing resources are needed.
+
+Future adoption efforts can include developer documentation, community workshops, hackathon onboarding, ecosystem partnerships, and links to verified Portaldot V3 development resources.
+
+### Operational Reliability and Sustainability
+
+A faucet is useful only when participants can depend on it.
+
+Its operational model should prioritize:
+
+- **Controlled Distribution:** Maintain claim limits, wallet cooldowns, eligibility checks, and abuse prevention.
+- **Transparent Operations:** Make claim statuses and available transaction references accessible to participants.
+- **Infrastructure Monitoring:** Monitor RPC availability, API health, database connectivity, failed claims, and pending transactions.
+- **Responsible Funding:** Coordinate test-token allocations with network or ecosystem operators and maintain a documented replenishment process.
+- **Operational Accountability:** Review usage, failure rates, infrastructure costs, and support requests to guide improvements.
+
+POT Starter Hub is intended as an ecosystem onboarding utility, not a source of financial returns. Test tokens are for development and experimentation and have no mainnet value.
+
+### Adoption Metrics
+
+Useful indicators for evaluating ecosystem impact include:
+
+- Number of successful, finalized faucet claims.
+- Number of unique wallets onboarded.
+- Percentage of eligible claims that reach confirmation.
+- Claim failure and pending-reconciliation rates.
+- Repeat developer activity.
+- First-testnet-transaction completion.
+- Community and hackathon participation.
+
+These metrics can help evaluate whether the platform is reducing onboarding friction and contributing to ecosystem participation.
+
+### Future Development
+
+Potential development areas include:
+
+- Richer transaction context and traceability.
+- Improved developer tutorials and onboarding resources.
+- Additional ecosystem integrations.
+- Better operational analytics and monitoring.
+- Broader wallet support where the relevant network functionality is implemented and verified.
+- Improved claim reconciliation and status reporting.
+
+These are potential development directions, not claims that every capability is currently available.
 
 ## Security Notes
 
-- Never enter or share a seed phrase or private key with the faucet.
+Security and responsible testnet usage are important parts of the platform.
+
+- Never enter or share your wallet seed phrase or private key with the faucet.
 - Keep environment variables and database credentials private.
 - Use native Portaldot addresses for the native-wallet workflow.
 - Never send mainnet assets to testnet addresses.
+- Verify transaction status before treating a claim as finalized.
+- Do not commit secrets or sensitive credentials to the repository.
 
 ## Project Status
 
-POT Starter Hub is an actively developed testnet onboarding prototype. The live demo showcases its faucet workflow, wallet eligibility checks, developer guidance, and claim-history interface. Features that depend on live network confirmation remain subject to testnet availability.
+POT Starter Hub is built as a Portaldot V3 testnet onboarding platform.
+
+Its current documented scope covers native wallet eligibility checks, test-token claim requests, balance inspection, developer onboarding guidance, and claim history.
+
+The platform is designed to provide a straightforward entry point for developers and ecosystem participants exploring Portaldot V3.
+
+Feature completeness within this documented scope is separate from the availability of external infrastructure. Live faucet operations remain dependent on testnet RPC availability, backend health, database connectivity, faucet configuration, and successful blockchain confirmation.
+
+EVM functionality is not included in the current implemented scope.
 
 ## Contributing
 
+Contributions, suggestions, and improvements are welcome.
+
+To contribute:
+
 1. Fork the repository.
 2. Create a focused feature branch.
-3. Make and test your changes.
-4. Run the relevant package builds.
-5. Open a pull request describing the change and verification steps.
+3. Make your changes.
+4. Test the affected functionality.
+5. Run the relevant package builds.
+6. Open a pull request describing the changes and verification steps.
+
+Please keep contributions focused, documented, and consistent with the project's architecture.
 
 ## License
 
-No license has been specified in this repository yet. Unless a license is added, the code should not be assumed to be available for unrestricted reuse.
+No license has been specified in this repository yet.
+
+Unless a license is added, the code should not be assumed to be available for unrestricted reuse.
 
 ---
 

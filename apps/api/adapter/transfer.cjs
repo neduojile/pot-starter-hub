@@ -1,4 +1,4 @@
-﻿const { ApiPromise, WsProvider } = require("@polkadot/api");
+const { ApiPromise, WsProvider } = require("@polkadot/api");
 const { Keyring } = require("@polkadot/keyring");
 const { cryptoWaitReady } = require("@polkadot/util-crypto");
 require("dotenv").config();
@@ -162,6 +162,7 @@ async function main() {
               ok: false,
               finalized: true,
               txHash,
+              blockHash: finalizedHash.toHex(),
               failureReason: reason
             });
             return;
@@ -177,7 +178,12 @@ async function main() {
             throw new Error("Finalized transaction has no ExtrinsicSuccess event.");
           }
 
-          resolve({ ok: true, finalized: true, txHash });
+          resolve({
+            ok: true,
+            finalized: true,
+            txHash,
+            blockHash: finalizedHash.toHex(),
+          });
         })().catch((error) => {
           reject(error);
         });

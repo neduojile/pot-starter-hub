@@ -492,3 +492,40 @@
   .viewAll { min-height: 40px; font-size: 11px; }
   .claim { padding: 15px 0; }
 }
+
+/* Verified transaction links */
+.transactionLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  color: #b5f36d;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.transactionLink:hover {
+  color: #d2ff9c;
+  text-decoration: underline;
+}
+
+.transactionLink:focus-visible {
+  outline: 2px solid #b5f36d;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

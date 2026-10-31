@@ -5,7 +5,7 @@ import {
   Injectable,
   ServiceUnavailableException,
 } from "@nestjs/common";
-import { checkAddress } from "@polkadot/util-crypto";
+import { normalizeWalletAddress } from "./faucet-validation.js";
 import { spawn } from "node:child_process";
 import { getTxCreator } from "@polkadot-api/raw-tx-creator";
 import {
@@ -65,6 +65,9 @@ export class FaucetService {
         amount: true,
         status: true,
         txHash: true,
+        blockHash: true,
+        chain: true,
+        action: true,
         createdAt: true,
         confirmedAt: true,
       },
@@ -77,8 +80,8 @@ export class FaucetService {
   }
 
   async getEligibility(walletAddress: string) {
-    const address = walletAddress.trim();
-    if (!address || address.length > 128 || !checkAddress(address, 42)[0]) {
+    const address = normalizeWalletAddress(walletAddress);
+    if (!address) {
       return { eligible: false, reason: "Invalid wallet address." };
     }
 
@@ -156,8 +159,8 @@ export class FaucetService {
       );
     }
 
-    const address = walletAddress?.trim();
-    if (!address || address.length > 128 || !checkAddress(address, 42)[0]) {
+    const address = normalizeWalletAddress(walletAddress);
+    if (!address) {
       throw new BadRequestException("Enter a valid Portaldot wallet address.");
     }
 
@@ -218,6 +221,8 @@ export class FaucetService {
           walletAddress: address,
           amount: config.claimAmount,
           status: "PENDING",
+          chain: "Portaldot V3",
+          action: "FAUCET_CLAIM",
         },
       });
 
@@ -338,6 +343,7 @@ export class FaucetService {
         data: {
           status: "FAILED",
           txHash: result.txHash,
+          ...(result.blockHash ? { blockHash: result.blockHash } : {}),
           failureReason: String(result.failureReason ?? "Finalized on-chain dispatch failure.").slice(0, 500),
         },
       });
@@ -358,6 +364,7 @@ export class FaucetService {
       data: {
         status: "CONFIRMED",
         txHash: result.txHash,
+        ...(result.blockHash ? { blockHash: result.blockHash } : {}),
         confirmedAt: new Date(),
       },
     });
@@ -368,11 +375,10 @@ export class FaucetService {
       amount: confirmed.amount.toString(),
       status: confirmed.status,
       txHash: confirmed.txHash,
+      blockHash: confirmed.blockHash,
+      chain: "Portaldot V3",
+      action: "FAUCET_CLAIM",
       confirmedAt: confirmed.confirmedAt,
     };
   }
 }
-
-
-
-

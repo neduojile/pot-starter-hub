@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import styles from "./live-faucet-data.module.css";
@@ -10,6 +10,10 @@ type Claim = {
   status: string;
   createdAt: string;
   txHash: string | null;
+  blockHash: string | null;
+  chain: string;
+  action: string;
+  confirmedAt: string | null;
 };
 
 type HistoryResponse = Claim[] | { value?: Claim[] };
@@ -142,8 +146,29 @@ export default function LiveFaucetData({ onViewAll, showAll = false }: Props) {
               <div className={styles.claimInfo}>
                 <strong>{formatAddress(claim.walletAddress)}</strong>
                 <span title={claim.walletAddress}>
-                  {formatAmount(claim.amount)} ? {new Date(claim.createdAt).toLocaleString()}
+                  {formatAmount(claim.amount)} · Portaldot V3 · Faucet claim
                 </span>
+                <span>
+                  Confirmed {new Date(claim.confirmedAt || claim.createdAt).toLocaleString()}
+                </span>
+                {claim.txHash && (
+                  <span title={claim.txHash}>
+                    Tx {`${claim.txHash.slice(0, 10)}...${claim.txHash.slice(-8)}`}
+                  </span>
+                )}
+                {claim.blockHash && (
+                  <a
+                    className={styles.transactionLink}
+                    href={`https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Ftest-node-v3.portaldot.dev#/explorer/query/${claim.blockHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`Open finalized block: ${claim.blockHash}`}
+                  >
+                    Block {`${claim.blockHash.slice(0, 10)}...${claim.blockHash.slice(-8)}`}
+                    <span aria-hidden="true"> ↗</span>
+                    <span className={styles.srOnly}>Open finalized block in explorer</span>
+                  </a>
+                )}
               </div>
               <span
                 className={`${styles.status} ${

@@ -281,6 +281,8 @@ model FaucetClaim {
   status        ClaimStatus @default(PENDING)
   txHash        String?     @unique
   blockHash     String?
+  chain         String      @default("Portaldot V3")
+  action        String      @default("FAUCET_CLAIM")
   failureReason String?
   createdAt     DateTime    @default(now())
   confirmedAt   DateTime?
