@@ -267,12 +267,6 @@ export default function WalletAddressChecker() {
       if (data.status === "CONFIRMED" && data.txHash) {
         window.dispatchEvent(new Event("faucet:claim-confirmed"));
 
-        try {
-          await refreshEligibility(value);
-        } catch {
-          // Eligibility refresh must never override a confirmed transaction.
-        }
-
         setEligible(false);
         setMessage("Claim successful! Your 10 tPOTv3 has been sent and confirmed on Portaldot V3. You can check your wallet.");
         setIsError(false);
