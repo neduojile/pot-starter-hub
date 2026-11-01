@@ -7,8 +7,8 @@
 
 A self-service testnet faucet and developer quick-start hub for receiving **10 tPOTv3**, checking wallet eligibility, and exploring the Portaldot V3 ecosystem.
 
-[Live Demo](https://pot-starter-hub.vercel.app) ·
-[GitHub Repository](https://github.com/neduojile/pot-starter-hub) ·
+[Live Demo](https://pot-starter-hub.vercel.app) |
+[GitHub Repository](https://github.com/neduojile/pot-starter-hub) |
 [Portaldot Node Console](https://node-console.portaldot.dev)
 
 </div>
@@ -115,26 +115,28 @@ A submitted claim request is not necessarily a finalized blockchain transaction.
 
 ```text
 pot-starter-hub/
-├── apps/
-│   ├── web/                  # Next.js frontend
-│   └── api/                  # NestJS API and transfer adapter
-├── packages/
-│   ├── blockchain/           # Blockchain integration utilities
-│   └── database/             # Prisma schema and database client
-├── package.json
-├── pnpm-workspace.yaml
-├── turbo.json
-└── README.md
+|-- apps/
+|   |-- api/                  # NestJS backend and transfer adapter
+|   `-- web/                  # Next.js frontend
+|-- packages/
+|   |-- blockchain/           # Blockchain integration
+|   |-- config/               # Shared configuration
+|   |-- database/             # Prisma schema and database client
+|   |-- eslint-config/        # Shared ESLint configuration
+|   |-- typescript-config/    # Shared TypeScript configuration
+|   |-- ui/                   # Shared UI components
+|   `-- validation/           # Shared validation utilities
+|-- package.json
+|-- pnpm-workspace.yaml
+|-- turbo.json
+`-- README.md
 ```
-
 ## Local Development
 
 ### Requirements
 
-Before running the project locally, make sure you have:
-
-- Node.js 24 or a compatible version required by the repository.
-- Corepack-enabled pnpm.
+- Node.js 24 or later.
+- Corepack and pnpm 11.25.0.
 - PostgreSQL database.
 - Git.
 
@@ -142,9 +144,6 @@ Before running the project locally, make sure you have:
 
 ```bash
 git clone https://github.com/neduojile/pot-starter-hub.git
-```
-
-```bash
 cd pot-starter-hub
 ```
 
@@ -156,34 +155,75 @@ corepack pnpm install
 
 ### 3. Configure Environment Variables
 
-Configure the database connection and other required environment variables using the project's environment files.
+Copy the example files:
 
-Make sure your PostgreSQL database is running and accessible.
+```powershell
+Copy-Item packages/database/.env.example packages/database/.env
+Copy-Item apps/web/.env.example apps/web/.env.local
+```
 
-Never commit `.env` files, database credentials, seed phrases, or private keys.
+Configure these variables:
 
-### 4. Build the Database Package
+| Variable | Purpose |
+|---|---|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `FAUCET_SIGNER_URI` | Private faucet signer URI |
+| `FAUCET_ADDRESS` | Expected public faucet address |
+| `FAUCET_CLAIMS_ENABLED` | Set to `false` by default |
+| `PORT` | Optional API port; defaults to `4000` |
+| `POT_TRANSFER_ADAPTER_PATH` | Optional transfer adapter path override |
+| `FAUCET_API_URL` | Backend API URL used by the web application |
+
+The database package loads its environment file from `packages/database/.env`. Ensure the API process receives its required environment variables when running locally or in deployment.
+
+Deployment environments should provide the required variables explicitly.
+
+Never commit real `.env` files, database credentials, signer URIs, seed phrases, or private keys.
+
+### 4. Generate and Validate the Database Client
+
+```bash
+corepack pnpm --filter @pot-starter-hub/database db:generate
+corepack pnpm --filter @pot-starter-hub/database db:validate
+```
+
+Ensure PostgreSQL is configured before running database operations.
+
+### 5. Build the Workspace Packages
 
 ```bash
 corepack pnpm --filter @pot-starter-hub/database build
-```
-
-### 5. Build the API
-
-```bash
 corepack pnpm --filter @pot-starter-hub/api build
-```
-
-### 6. Build the Web Application
-
-```bash
 corepack pnpm --filter web build
 ```
 
-Use the development scripts defined in the root and workspace package manifests to run the application locally.
+### 6. Start the Applications
 
-Start PostgreSQL and configure the required environment variables before starting the API and web application.
+Start the API in one terminal:
 
+```bash
+corepack pnpm --filter @pot-starter-hub/api dev
+```
+
+Start the web application in another terminal:
+
+```bash
+corepack pnpm --filter web dev
+```
+
+Open `http://localhost:3000` in your browser. The API defaults to port `4000`.
+
+### Useful Root Commands
+
+| Command | Purpose |
+|---|---|
+| `corepack pnpm dev` | Run workspace development tasks |
+| `corepack pnpm build` | Build workspace packages |
+| `corepack pnpm lint` | Run lint checks |
+| `corepack pnpm check-types` | Run TypeScript checks |
+| `corepack pnpm format` | Format TypeScript and Markdown files |
+
+The database package also provides `db:push`. This command changes the database schema; review your database state before using it.
 ## API Endpoints
 
 The backend exposes the following primary endpoints:
