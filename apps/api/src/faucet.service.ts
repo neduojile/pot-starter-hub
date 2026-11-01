@@ -115,8 +115,7 @@ export class FaucetService {
       this.database.client.faucetClaim.findFirst({
         where: {
           walletAddress: address,
-          status: "CONFIRMED",
-          confirmedAt: { not: null },
+          status: { in: ["PENDING", "CONFIRMED"] },
         },
         orderBy: { createdAt: "desc" },
         select: { createdAt: true, confirmedAt: true, status: true },
@@ -133,6 +132,13 @@ export class FaucetService {
       return {
         eligible: false,
         reason: "The faucet daily limit has been reached.",
+      };
+    }
+
+    if (latestClaim?.status === "PENDING") {
+      return {
+        eligible: false,
+        reason: "You already have a claim awaiting confirmation.",
       };
     }
 
@@ -205,8 +211,7 @@ export class FaucetService {
         );
       }
       if (
-        latest &&
-        latest.createdAt.getTime() + config.cooldownSeconds * 1000 > Date.now()
+        latest?.status === "CONFIRMED" && latest.confirmedAt && latest.confirmedAt.getTime() + config.cooldownSeconds * 1000 > Date.now()
       ) {
         throw new ConflictException("This wallet is still on cooldown.");
       }

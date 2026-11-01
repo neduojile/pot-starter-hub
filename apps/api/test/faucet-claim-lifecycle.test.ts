@@ -134,6 +134,36 @@ async function withAdapter(
   }
 }
 
+
+test("reports a wallet with a pending claim as ineligible", async () => {
+  const previousEnabled = process.env.FAUCET_CLAIMS_ENABLED;
+  process.env.FAUCET_CLAIMS_ENABLED = "true";
+
+  try {
+    const { service } = createHarness({
+      latestClaim: {
+        id: "existing-pending-claim",
+        status: "PENDING",
+        createdAt: new Date(),
+        confirmedAt: null,
+      },
+    });
+
+    const result = await service.getEligibility(wallet);
+
+    assert.equal(result.eligible, false);
+    assert.equal(
+      result.reason,
+      "You already have a claim awaiting confirmation.",
+    );
+  } finally {
+    if (previousEnabled === undefined) {
+      delete process.env.FAUCET_CLAIMS_ENABLED;
+    } else {
+      process.env.FAUCET_CLAIMS_ENABLED = previousEnabled;
+    }
+  }
+});
 test("confirms a finalized successful claim and persists transaction details", async () => {
   await withAdapter(
     { ok: true, finalized: true, txHash, blockHash },
@@ -236,6 +266,32 @@ test("does not submit another transaction when a claim is already pending", asyn
         id: "existing-claim",
         status: "PENDING",
         createdAt: new Date(),
+      },
+    },
+  );
+});
+
+
+test("uses confirmedAt rather than createdAt when enforcing cooldown", async () => {
+  const now = Date.now();
+
+  await withAdapter(
+    { ok: true, finalized: true, txHash, blockHash },
+    async ({ service, updates }) => {
+      await assert.rejects(
+        () => service.claim(wallet),
+        ConflictException,
+      );
+
+      assert.equal(updates.length, 0);
+    },
+    true,
+    {
+      latestClaim: {
+        id: "delayed-confirmation",
+        status: "CONFIRMED",
+        createdAt: new Date(now - 25 * 60 * 60 * 1000),
+        confirmedAt: new Date(now - 23 * 60 * 60 * 1000),
       },
     },
   );

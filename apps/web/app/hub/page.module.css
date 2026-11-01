@@ -1,4 +1,4 @@
-﻿.page {
+.page {
   min-height: 100vh;
 }
 
@@ -3881,5 +3881,25 @@
   .mobileNavItem svg {
     width: 19px;
     height: 19px;
+  }
+}
+
+
+/* Desktop-only: balance the faucet and wallet columns */
+@media (min-width: 901px) {
+  .dashboardGrid {
+    align-items: stretch !important;
+  }
+
+  .faucetCard {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    min-height: 100%;
+  }
+
+  .claimFootnote {
+    margin-top: auto !important;
+    padding-top: 18px;
   }
 }

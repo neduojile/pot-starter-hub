@@ -56,7 +56,7 @@ async function main() {
 
     const account = await api.query.system.account(pair.address);
     const free = BigInt(account.data.free.toString());
-    const transfer = api.tx.balances.transferAllowDeath(
+    const transfer = api.tx.balances.transferKeepAlive(
       recipient,
       amount.toString(),
     );
