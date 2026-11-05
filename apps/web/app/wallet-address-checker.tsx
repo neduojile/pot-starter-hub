@@ -52,6 +52,25 @@ export default function WalletAddressChecker() {
   ].map((part) => String(part).padStart(2, "0"));
   const countdownLabel = `${countdown[0]}h ${countdown[1]}m ${countdown[2]}s`;
 
+  // COOLDOWN_AUTO_REFRESH
+  useEffect(() => {
+    if (nextClaimAt === null || remaining > 0 || !verified || !address.trim()) {
+      return;
+    }
+
+    const value = address.trim();
+    setNextClaimAt(null);
+
+    refreshEligibility(value).catch((error) => {
+      setIsError(true);
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Could not refresh claim eligibility.",
+      );
+    });
+  }, [remaining, nextClaimAt, verified, address]);
+
   function updateAddress(value: string) {
     setAddress(value);
     setVerified(false);

@@ -56,7 +56,7 @@ export class FaucetService {
   async getHistory(limit = 20) {
     const safeLimit = Math.min(Math.max(Math.trunc(limit) || 20, 1), 100);
     const claims = await this.database.client.faucetClaim.findMany({
-      where: { status: "CONFIRMED", confirmedAt: { not: null } },
+      where: { status: { in: ["PENDING", "CONFIRMED", "FAILED"] } },
       orderBy: { confirmedAt: "desc" },
       take: safeLimit,
       select: {
@@ -235,6 +235,7 @@ export class FaucetService {
     }, { maxWait: 15000, timeout: 30000 });
 
 
+    let transactionSubmitted = false;
     let result: any;
 
     try {
@@ -243,105 +244,171 @@ export class FaucetService {
         resolve(process.cwd(), "adapter/transfer.cjs");
 
       const raw = await new Promise<string>((resolve, reject) => {
-        const child = spawn(process.execPath, [adapterPath], {
-          stdio: ["pipe", "pipe", "pipe"],
-          windowsHide: true,
-        });
+  const child = spawn(process.execPath, [adapterPath], {
+    stdio: ["pipe", "pipe", "pipe"],
+    windowsHide: true,
+  });
 
-        let stdout = "";
-        let stdoutBuffer = "";
-        let stderr = "";
-        let settled = false;
-        let txHashPersist = Promise.resolve();
+  let stdout = "";
+  let stdoutBuffer = "";
+  let stderr = "";
+  let settled = false;
+  let timedOut = false;
+  let txHashPersist = Promise.resolve();
 
-        const timer = setTimeout(() => {
-          if (settled) return;
-          settled = true;
-          child.kill();
-          reject(new Error("Adapter timed out; claim remains pending for reconciliation."));
-        }, 150000);
+  const timer = setTimeout(() => {
+    if (settled) return;
+    timedOut = true;
+    child.kill();
+  }, 150000);
 
-        child.stdout.setEncoding("utf8");
-        child.stderr.setEncoding("utf8");
-        child.stdout.on("data", (chunk) => {
-          stdout += chunk;
-          stdoutBuffer += chunk;
-          const lines = stdoutBuffer.split(/\r?\n/);
-          stdoutBuffer = lines.pop() ?? "";
+  child.stdout.setEncoding("utf8");
+  child.stderr.setEncoding("utf8");
 
-          for (const line of lines) {
-            if (!line.trim()) continue;
-            try {
-              const message = JSON.parse(line);
-              if (
-                (message.event === "submitted" || message.event === "included") &&
-                message.txHash
-              ) {
-                txHashPersist = txHashPersist.then(async () => {
-                  await this.database.client.faucetClaim.update({
-                    where: { id: reservation.claim.id },
-                    data: {
-                      txHash: message.txHash,
-                      ...(message.blockHash
-                        ? { blockHash: message.blockHash }
-                        : {}),
-                    },
-                  });
-                }).catch((error) => {
-                  console.error("[FAUCET TRANSACTION LOCATION SAVE ERROR]", error);
-                });
-              }
-            } catch {
-              // Ignore non-JSON adapter output; final result is parsed on close.
-            }
-          }
-        });
-        child.stderr.on("data", (chunk) => { stderr += chunk; });
+  child.stdout.on("data", (chunk) => {
+    stdout += chunk;
+    stdoutBuffer += chunk;
 
-        child.on("error", (error) => {
-          if (settled) return;
-          settled = true;
-          clearTimeout(timer);
-          reject(error);
-        });
+    const lines = stdoutBuffer.split(/\r?\n/);
+    stdoutBuffer = lines.pop() ?? "";
 
-        child.on("close", async () => {
-          if (settled) return;
-          settled = true;
-          clearTimeout(timer);
-          await txHashPersist;
+    for (const line of lines) {
+      if (!line.trim()) continue;
 
-          const lines = stdout.trim().split(/\r?\n/).filter(Boolean);
-          const jsonLine = [...lines].reverse().find((line) => {
-            try {
-              const value = JSON.parse(line);
-              return value && typeof value === "object";
-            } catch {
-              return false;
-            }
-          });
+      try {
+        const message = JSON.parse(line);
 
-          if (!jsonLine) {
-            console.error("[FAUCET ADAPTER ERROR]", stderr.slice(-2000));
-            reject(new Error("Adapter returned no JSON result; claim remains pending for reconciliation."));
-            return;
-          }
+        if (
+          (message.event === "submission_started" ||
+            message.event === "submitted" ||
+            message.event === "included") &&
+          message.txHash
+        ) {
+          transactionSubmitted = true;
+          txHashPersist = txHashPersist
+            .then(async () => {
+              await this.database.client.faucetClaim.update({
+                where: { id: reservation.claim.id },
+                data: {
+                  txHash: message.txHash,
+                  ...(message.blockHash
+                    ? { blockHash: message.blockHash }
+                    : {}),
+                },
+              });
+            })
+            .catch((error) => {
+              console.error(
+                "[FAUCET TRANSACTION LOCATION SAVE ERROR]",
+                error,
+              );
+            });
+        }
+      } catch {
+        // Ignore non-JSON adapter output.
+      }
+    }
+  });
 
-          resolve(jsonLine);
-        });
+  child.stderr.on("data", (chunk) => {
+    stderr += chunk;
+  });
 
-        child.stdin.end(JSON.stringify({
-          action: "submit",
-          recipient: address,
-          amount: reservation.amount.toString(),
-        }));
-      });
+  child.on("error", async (error) => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timer);
+    await txHashPersist;
+    reject(error);
+  });
+
+  child.on("close", async () => {
+    if (settled) return;
+    settled = true;
+    clearTimeout(timer);
+
+    await txHashPersist;
+
+    if (timedOut) {
+      reject(
+        new Error(
+          "Adapter timed out; claim remains pending for reconciliation.",
+        ),
+      );
+      return;
+    }
+
+    const lines = stdout.trim().split(/\r?\n/).filter(Boolean);
+
+    const jsonLine = [...lines].reverse().find((line) => {
+      try {
+        const value = JSON.parse(line);
+        return value && typeof value === "object";
+      } catch {
+        return false;
+      }
+    });
+
+    if (!jsonLine) {
+      console.error("[FAUCET ADAPTER ERROR]", stderr.slice(-2000));
+      reject(
+        new Error(
+          "Adapter returned no JSON result; claim remains pending for reconciliation.",
+        ),
+      );
+      return;
+    }
+
+    resolve(jsonLine);
+  });
+
+  child.stdin.end(
+    JSON.stringify({
+      action: "submit",
+      recipient: address,
+      amount: reservation.amount.toString(),
+    }),
+  );
+});
 
       result = JSON.parse(raw);
     } catch (error) {
       console.error("[FAUCET ADAPTER ERROR]", error);
+
+      if (!transactionSubmitted) {
+        await this.database.client.faucetClaim.update({
+          where: { id: reservation.claim.id },
+          data: {
+            status: "FAILED",
+            failureReason: String(error instanceof Error ? error.message : error).slice(0, 500),
+          },
+        });
+
+        throw new ServiceUnavailableException(
+          "Faucet transfer failed before submission. You can try again later.",
+        );
+      }
+
       throw new ServiceUnavailableException(
         `Claim ${reservation.claim.id} is awaiting transaction reconciliation. Do not retry it until its on-chain outcome is checked.`,
+      );
+    }
+
+    if (result.ok === false && !transactionSubmitted) {
+      const reason = String(result.error ?? "Transfer failed before submission.");
+
+      await this.database.client.faucetClaim.update({
+        where: { id: reservation.claim.id },
+        data: {
+          status: "FAILED",
+          failureReason: reason.slice(0, 500),
+        },
+      });
+
+      throw new ServiceUnavailableException(
+        reason.toLowerCase().includes("insufficient")
+          ? "Faucet wallet has insufficient balance. Please try again later."
+          : reason,
       );
     }
 

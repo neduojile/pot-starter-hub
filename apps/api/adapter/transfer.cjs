@@ -93,6 +93,8 @@ async function main() {
         }
       }, 120000);
 
+      output({ event: "submission_started" });
+
       transfer.signAndSend(pair, { nonce: -1 }, (status) => {
         const observedHash = status.txHash?.toHex();
 
