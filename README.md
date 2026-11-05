@@ -1,4 +1,4 @@
-
+﻿
 <div align="center">
 
 # POT Starter Hub
@@ -397,16 +397,21 @@ To contribute:
 
 Please keep contributions focused, documented, and consistent with the project's architecture.
 
-## License
+## 21. Project Links
 
-No license has been specified in this repository yet.
+| Resource | Link |
+|---|---|
+| Live Application | https://pot-starter-hub.vercel.app |
+| GitHub Repository | https://github.com/neduojile/pot-starter-hub |
+| Demo Video | https://youtu.be/3xufJdHgVWw |
+| Developer X Profile | https://x.com/xavriseteritory |
+| Portaldot Node Console | https://node-console.portaldot.dev |
 
-Unless a license is added, the code should not be assumed to be available for unrestricted reuse.
+## 22. License
+
+MIT License.
+
 
 ---
 
-<div align="center">
-
-Built for developers exploring **Portaldot V3**.
-
-</div>
+**Built to make getting started on Portaldot V3 easier for every developer.**
