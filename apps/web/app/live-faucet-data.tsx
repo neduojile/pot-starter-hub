@@ -66,7 +66,7 @@ export default function LiveFaucetData({ onViewAll, showAll = false }: Props) {
     const onClaimConfirmed = () => void load();
     window.addEventListener("faucet:claim-confirmed", onClaimConfirmed);
 
-    const timer = setInterval(() => void load(), 1000);
+    const timer = setInterval(() => void load(), 15000);
     return () => {
       active = false;
       clearInterval(timer);
