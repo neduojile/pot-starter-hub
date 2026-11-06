@@ -36,7 +36,7 @@ export default function LiveFaucetData({ onViewAll, showAll = false }: Props) {
       loading = true;
       try {
         const response = await fetch(
-          `/api/faucet/history?limit=${showAll ? 100 : 4}`,
+          `/api/faucet/history?limit=100`,
           {
           cache: "no-store",
         });
